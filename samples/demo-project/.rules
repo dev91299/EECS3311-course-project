@@ -1,0 +1,23 @@
+# Coding standard for the demo project.
+#
+# The AI Code Review Agent reads this file when the repository is imported (feature F06).
+# Every rule below is enforced mechanically by StandardsChecker; the language model is only
+# asked about the judgement calls a rule engine cannot make, such as whether an identifier
+# actually describes what it holds.
+#
+# Syntax: key = value, one per line. Lines starting with # are ignored.
+
+max_line_length = 100
+forbid_tabs = true
+require_final_newline = true
+max_method_lines = 40
+max_parameters = 5
+forbid_wildcard_imports = true
+require_braces = true
+
+# Free-text conventions below this line are passed to the model as additional context.
+#
+# Naming: prefer domain words over generic ones. "customerEmail", not "data" or "value".
+# Errors: never swallow an exception. Either handle it or wrap and rethrow it.
+# Logging: never log credentials, tokens, full card numbers or personal addresses.
+# SQL: always use PreparedStatement with bound parameters.
