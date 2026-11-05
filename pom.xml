@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.eecs3311</groupId>
+  <artifactId>ai-code-review-agent</artifactId>
+  <version>2.0.0</version>
+  <packaging>jar</packaging>
+
+  <name>AI Code Review Agent</name>
+  <description>EECS3311 Course Project Stage 2 - AI agent based code review system (GUI + CLI)</description>
+
+  <properties>
+    <maven.compiler.release>17</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <junit.version>5.10.2</junit.version>
+  </properties>
+
+  <!--
+       NOTE ON DEPENDENCIES
+       ====================
+       The application itself has ZERO runtime dependencies. Everything (HTTP calls to the
+       LLM API, JSON parsing, PDF writing, diffing) is implemented with the Java standard
+       library so that the project compiles and runs on any machine with a JDK, with no
+       network access needed for the build. JUnit is used for tests only (scope: test).
+  -->
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>ai-code-review-agent</finalName>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.5</version>
+      </plugin>
+
+      <!-- Produces an executable jar: java -jar target/ai-code-review-agent.jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.4.1</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com.eecs3311.codereview.app.Main</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>

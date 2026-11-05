@@ -1,0 +1,49 @@
+# ---------------------------------------------------------------------------
+# Local secrets - NEVER commit these.
+# The repository contains .env.example with placeholders only.
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+config.local.json
+*.key
+*.pem
+secrets/
+
+# ---------------------------------------------------------------------------
+# Agent memory written beside a reviewed repository (may contain code excerpts)
+# ---------------------------------------------------------------------------
+.agent-memory/
+samples/**/.agent-memory/
+
+# ---------------------------------------------------------------------------
+# Build output
+# ---------------------------------------------------------------------------
+target/
+build/
+out/
+bin/
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# ---------------------------------------------------------------------------
+# Generated reports (regenerate them rather than committing them)
+# ---------------------------------------------------------------------------
+reports/
+*.report.pdf
+code-review-report.*
+
+# ---------------------------------------------------------------------------
+# IDE and OS noise
+# ---------------------------------------------------------------------------
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+.DS_Store
+Thumbs.db
+*.swp
+*~
