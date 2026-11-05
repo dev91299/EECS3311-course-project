@@ -1,0 +1,438 @@
+/*
+ * UML class diagram of the implemented system (Stage 2).
+ *
+ * Render with:
+ *   dot -Tpng class-diagram.dot -o class-diagram.png
+ *   dot -Tsvg class-diagram.dot -o class-diagram.svg
+ *
+ * Only the classes that carry a design-pattern role or a feature responsibility are shown;
+ * value objects and small helpers are omitted so the structure stays readable.
+ */
+digraph ImplementedClassDiagram {
+
+    rankdir = TB;
+    splines = spline;
+    concentrate = false;
+    nodesep = 0.45;
+    ranksep = 0.65;
+    fontname = "Helvetica";
+    bgcolor = "white";
+
+    node [shape = plaintext, fontname = "Helvetica", fontsize = 10];
+    edge [fontname = "Helvetica", fontsize = 9, color = "#333333"];
+
+    /* ---------------------------------------------------------------- UI layer */
+
+    subgraph cluster_ui {
+        label = "ui  -  presentation (Observer: concrete observers)";
+        style = "rounded";
+        color = "#8FA8C8";
+        fontname = "Helvetica-Bold";
+        fontsize = 11;
+        fontcolor = "#33517A";
+
+        CodeReviewGUI [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#EAF0FA">
+            <tr><td align="center"><b>CodeReviewGUI</b><br/><i>&lt;&lt;Observer, Invoker&gt;&gt;</i></td></tr>
+            <hr/>
+            <tr><td align="left">- controller: AgentController<br/>- findingsModel: FindingsTableModel<br/>- fileTree: JTree<br/>- currentFilePath: String</td></tr>
+            <hr/>
+            <tr><td align="left">+ updateUI(UpdateEvent, Object): void<br/>+ actionAnalyse(): void<br/>+ actionRunAudit(): void<br/>+ actionAccept()/actionReject(): void<br/>+ actionExport(): void</td></tr>
+          </table>>];
+
+        CLIView [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#EAF0FA">
+            <tr><td align="center"><b>CLIView</b><br/><i>&lt;&lt;Observer, Invoker&gt;&gt;</i></td></tr>
+            <hr/>
+            <tr><td align="left">- controller: AgentController<br/>- currentPath: String</td></tr>
+            <hr/>
+            <tr><td align="left">+ updateUI(UpdateEvent, Object): void<br/>+ start(): void<br/>+ runOnce(String, String): int<br/>- handleCommand(String): void</td></tr>
+          </table>>];
+    }
+
+    Observer [label = <
+      <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FFF6E0">
+        <tr><td align="center"><i>&lt;&lt;interface&gt;&gt;</i><br/><b>Observer</b></td></tr>
+        <hr/>
+        <tr><td align="left">+ updateUI(UpdateEvent, Object): void</td></tr>
+      </table>>];
+
+    Subject [label = <
+      <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FFF6E0">
+        <tr><td align="center"><i>&lt;&lt;abstract&gt;&gt;</i><br/><b>Subject</b></td></tr>
+        <hr/>
+        <tr><td align="left">- observers: List&lt;Observer&gt;</td></tr>
+        <hr/>
+        <tr><td align="left">+ addObserver(Observer): void<br/>+ removeObserver(Observer): void<br/># notifyObservers(UpdateEvent, Object): void</td></tr>
+      </table>>];
+
+    /* ---------------------------------------------------------------- controller */
+
+    AgentController [label = <
+      <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#E6F2E6">
+        <tr><td align="center"><b>AgentController</b></td></tr>
+        <hr/>
+        <tr><td align="left">- repoManager: RepoManager<br/>- report: ReviewReport<br/>- agent: ReviewAgent<br/>- history: CommandHistory<br/>- snapshots: Map&lt;String, ReviewSnapshot&gt;</td></tr>
+        <hr/>
+        <tr><td align="left">+ handleImport(String, boolean): FileNode<br/>+ requestReview(String, String, String): List<br/>+ summarise() / generateTests(): String<br/>+ suggestRefactor(): RefactorResult<br/>+ submitChat(String, String): String<br/>+ runAudit(String, int, Consumer): String<br/>+ acceptFinding()/rejectFinding(): boolean<br/>+ undo()/redo(): Optional&lt;String&gt;<br/>+ takeSnapshot()/compareSnapshots()<br/>+ exportReport(String, String): Path</td></tr>
+      </table>>];
+
+    /* ---------------------------------------------------------------- agent */
+
+    subgraph cluster_agent {
+        label = "agent  -  reasoning, tools and memory";
+        style = "rounded";
+        color = "#C8A98F";
+        fontname = "Helvetica-Bold";
+        fontsize = 11;
+        fontcolor = "#7A5433";
+
+        ReviewAgent [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FBEFE4">
+            <tr><td align="center"><b>ReviewAgent</b><br/><i>&lt;&lt;Facade&gt;&gt;</i></td></tr>
+            <hr/>
+            <tr><td align="left">- strategies: StrategyRegistry<br/>- retriever: CodeRetriever<br/>- memory: AgentMemory<br/>- tools: ToolRegistry<br/>- planner: AgentPlanner<br/>- conversation: List&lt;ChatMessage&gt;</td></tr>
+            <hr/>
+            <tr><td align="left">+ analyzeFile(String, String): List<br/>+ analyzeCode(String, String, String): List<br/>+ summarise(String, String): String<br/>+ generateTests(String, String): String<br/>+ suggestRefactor(...): String<br/>+ chat(String, String): String<br/>+ runAudit(String, int, Consumer): String<br/>+ rememberDecision(ReviewItem): void</td></tr>
+          </table>>];
+
+        AgentPlanner [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FBEFE4">
+            <tr><td align="center"><b>AgentPlanner</b></td></tr>
+            <hr/>
+            <tr><td align="left">- tools: ToolRegistry<br/>- memory: AgentMemory<br/>- trace: List&lt;AgentStep&gt;</td></tr>
+            <hr/>
+            <tr><td align="left">+ run(String goal, int maxSteps): String<br/>- createPlan(String): String<br/>- decideNextAction(...): Map<br/>- synthesise(String): String</td></tr>
+          </table>>];
+
+        AgentMemory [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FBEFE4">
+            <tr><td align="center"><b>AgentMemory</b></td></tr>
+            <hr/>
+            <tr><td align="left">- shortTerm: List&lt;String&gt;<br/>- longTerm: Map&lt;String, MemoryEntry&gt;</td></tr>
+            <hr/>
+            <tr><td align="left">+ remember(String): void<br/>+ recordDecision(ReviewItem): void<br/>+ recall(String, String, int): List<br/>+ renderRecall(...): String</td></tr>
+          </table>>];
+
+        CodeRetriever [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FBEFE4">
+            <tr><td align="center"><b>CodeRetriever</b></td></tr>
+            <hr/>
+            <tr><td align="left">- documentFrequency: Map&lt;String, Integer&gt;</td></tr>
+            <hr/>
+            <tr><td align="left">+ buildIndex(int): int<br/>+ retrieve(String, int, int): List&lt;Snippet&gt;<br/>+ grep(String, int): List&lt;String&gt;</td></tr>
+          </table>>];
+
+        ToolRegistry [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FBEFE4">
+            <tr><td align="center"><b>ToolRegistry</b></td></tr>
+            <hr/>
+            <tr><td align="left">- tools: Map&lt;String, AgentTool&gt;</td></tr>
+            <hr/>
+            <tr><td align="left">+ register(AgentTool): void<br/>+ execute(String, String): String<br/>+ describeForPrompt(): String</td></tr>
+          </table>>];
+
+        AgentTool [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FFF6E0">
+            <tr><td align="center"><i>&lt;&lt;interface&gt;&gt;</i><br/><b>AgentTool</b></td></tr>
+            <hr/>
+            <tr><td align="left">+ getName(): String<br/>+ getDescription(): String<br/>+ execute(String): String</td></tr>
+          </table>>];
+
+        ConcreteTools [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FBEFE4">
+            <tr><td align="center"><b>ListFilesTool</b> | <b>ReadFileTool</b></td></tr>
+            <tr><td align="center"><b>SearchCodeTool</b> | <b>AnalyzeFileTool</b></td></tr>
+            <tr><td align="center"><b>GitHistoryTool</b></td></tr>
+            <hr/>
+            <tr><td align="left">+ execute(String input): String</td></tr>
+          </table>>];
+    }
+
+    /* ---------------------------------------------------------------- strategies */
+
+    subgraph cluster_strategy {
+        label = "agent.strategy  -  Strategy + Template Method";
+        style = "rounded";
+        color = "#A98FC8";
+        fontname = "Helvetica-Bold";
+        fontsize = 11;
+        fontcolor = "#54337A";
+
+        ReviewStrategy [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FFF6E0">
+            <tr><td align="center"><i>&lt;&lt;interface&gt;&gt;</i><br/><b>ReviewStrategy</b></td></tr>
+            <hr/>
+            <tr><td align="left">+ executeStrategy(AnalysisContext): List&lt;ReviewItem&gt;<br/>+ getName(): String</td></tr>
+          </table>>];
+
+        AbstractReviewStrategy [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#F2EAFA">
+            <tr><td align="center"><i>&lt;&lt;abstract&gt;&gt;</i><br/><b>AbstractReviewStrategy</b><br/><i>&lt;&lt;Template Method&gt;&gt;</i></td></tr>
+            <hr/>
+            <tr><td align="left"><b>+ executeStrategy(): final</b><br/># getRoleInstruction(): abstract<br/># decoratePrompt(): abstract<br/># getPurpose(): abstract<br/># runDeterministicPass(): hook<br/># getSeverityCeiling(): hook<br/># postProcess(): hook<br/># parseFindings() / validate(): shared</td></tr>
+          </table>>];
+
+        ConcreteStrategies [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#F2EAFA">
+            <tr><td align="center"><b>SecurityStrategy</b> (F03)</td></tr>
+            <tr><td align="center"><b>StyleStrategy</b> (F06, hybrid)</td></tr>
+            <tr><td align="center"><b>PerformanceStrategy</b> (new)</td></tr>
+            <tr><td align="center"><b>MaintainabilityStrategy</b> (new)</td></tr>
+          </table>>];
+    }
+
+    /* ---------------------------------------------------------------- llm */
+
+    subgraph cluster_llm {
+        label = "llm  -  Singleton + Factory Method + Decorator + Builder";
+        style = "rounded";
+        color = "#8FC8B4";
+        fontname = "Helvetica-Bold";
+        fontsize = 11;
+        fontcolor = "#2E6D5B";
+
+        LLMClient [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#E4F6F0">
+            <tr><td align="center"><b>LLMClient</b><br/><i>&lt;&lt;Singleton&gt;&gt;</i></td></tr>
+            <hr/>
+            <tr><td align="left">- provider: LLMProvider<br/>- stats: UsageStats</td></tr>
+            <hr/>
+            <tr><td align="left">+ getInstance(): LLMClient {static}<br/>+ sendPrompt(String, String, String): String<br/>+ sendConversation(List, String, double)<br/>+ getUsageStats(): UsageStats<br/>+ isOfflineMode(): boolean</td></tr>
+          </table>>];
+
+        LLMProviderFactory [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#E4F6F0">
+            <tr><td align="center"><b>LLMProviderFactory</b><br/><i>&lt;&lt;Factory Method&gt;&gt;</i></td></tr>
+            <hr/>
+            <tr><td align="left">+ create(UsageStats, Consumer): LLMProvider {static}<br/>- createTransport(): LLMProvider {static}</td></tr>
+          </table>>];
+
+        LLMProvider [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FFF6E0">
+            <tr><td align="center"><i>&lt;&lt;interface&gt;&gt;</i><br/><b>LLMProvider</b></td></tr>
+            <hr/>
+            <tr><td align="left">+ complete(LLMRequest): LLMResponse<br/>+ name(): String</td></tr>
+          </table>>];
+
+        Transports [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#E4F6F0">
+            <tr><td align="center"><b>OpenAiCompatibleProvider</b></td></tr>
+            <tr><td align="center"><i>Groq | OpenRouter | Ollama | OpenAI</i></td></tr>
+            <tr><td align="center"><b>MockProvider</b> (offline fallback)</td></tr>
+          </table>>];
+
+        LLMProviderDecorator [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#E4F6F0">
+            <tr><td align="center"><i>&lt;&lt;abstract&gt;&gt;</i><br/><b>LLMProviderDecorator</b><br/><i>&lt;&lt;Decorator&gt;&gt;</i></td></tr>
+            <hr/>
+            <tr><td align="left"># inner: LLMProvider</td></tr>
+          </table>>];
+
+        Decorators [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#E4F6F0">
+            <tr><td align="center"><b>RetryingProvider</b> (SD01 error flow)</td></tr>
+            <tr><td align="center"><b>CachingProvider</b></td></tr>
+            <tr><td align="center"><b>RateLimitingProvider</b></td></tr>
+            <tr><td align="center"><b>LoggingProvider</b> &#8594; UsageStats</td></tr>
+          </table>>];
+
+        PromptBuilder [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#E4F6F0">
+            <tr><td align="center"><b>PromptBuilder</b><br/><i>&lt;&lt;Builder&gt;&gt;</i></td></tr>
+            <hr/>
+            <tr><td align="left">+ role()/conventions()/memory()<br/>+ retrievedContext()/code()/outputSchema()<br/>+ build(): String</td></tr>
+          </table>>];
+    }
+
+    /* ---------------------------------------------------------------- model */
+
+    subgraph cluster_model {
+        label = "model  -  Composite + Memento";
+        style = "rounded";
+        color = "#C88F8F";
+        fontname = "Helvetica-Bold";
+        fontsize = 11;
+        fontcolor = "#7A3333";
+
+        ReviewReport [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FAEAEA">
+            <tr><td align="center"><b>ReviewReport</b><br/><i>&lt;&lt;Concrete Subject&gt;&gt;</i></td></tr>
+            <hr/>
+            <tr><td align="left">- items: List&lt;ReviewItem&gt;<br/>- repositoryPath: String</td></tr>
+            <hr/>
+            <tr><td align="left">+ addItems(List): void<br/>+ aggregateItems(): Map<br/>+ countBySeverity(): Map<br/>+ snapshot(String, String): ReviewSnapshot<br/>+ getHealthVerdict(): String</td></tr>
+          </table>>];
+
+        ReviewItem [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FAEAEA">
+            <tr><td align="center"><b>ReviewItem</b><br/><i>&lt;&lt;Memento Originator&gt;&gt;</i></td></tr>
+            <hr/>
+            <tr><td align="left">- issueId: String<br/>- filePath: String<br/>- lineNumber: int<br/>- severity: Severity<br/>- status: ReviewStatus<br/>- feedback: String</td></tr>
+            <hr/>
+            <tr><td align="left">+ updateStatus(ReviewStatus, String): void<br/>+ createMemento(): Memento<br/>+ restore(Memento): void<br/>+ getFingerprint(): String</td></tr>
+          </table>>];
+
+        FileNode [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FAEAEA">
+            <tr><td align="center"><b>FileNode</b><br/><i>&lt;&lt;Composite + Leaf&gt;&gt;</i></td></tr>
+            <hr/>
+            <tr><td align="left">- directory: boolean<br/>- children: List&lt;FileNode&gt;</td></tr>
+            <hr/>
+            <tr><td align="left">+ add(FileNode): FileNode<br/>+ getTotalFiles(): int<br/>+ getTotalSizeBytes(): long<br/>+ flatten(): List&lt;FileNode&gt;<br/>+ find(String): Optional<br/>+ render(int): String</td></tr>
+          </table>>];
+
+        ReviewSnapshot [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FAEAEA">
+            <tr><td align="center"><b>ReviewSnapshot</b> / <b>DeltaReport</b><br/>(F08)</td></tr>
+            <hr/>
+            <tr><td align="left">+ fingerprints(): Set&lt;String&gt;<br/>+ getResolved()/getIntroduced()<br/>+ getVerdict(): String</td></tr>
+          </table>>];
+    }
+
+    /* ---------------------------------------------------------------- command */
+
+    subgraph cluster_command {
+        label = "command  -  Command (with undo)";
+        style = "rounded";
+        color = "#C8C08F";
+        fontname = "Helvetica-Bold";
+        fontsize = 11;
+        fontcolor = "#7A7033";
+
+        ReviewCommand [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FFF6E0">
+            <tr><td align="center"><i>&lt;&lt;interface&gt;&gt;</i><br/><b>ReviewCommand</b></td></tr>
+            <hr/>
+            <tr><td align="left">+ execute(): void<br/>+ undo(): void<br/>+ getDescription(): String</td></tr>
+          </table>>];
+
+        ConcreteCommands [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FAF6E4">
+            <tr><td align="center"><b>AcceptCommand</b> | <b>RejectCommand</b> (F07)</td></tr>
+            <tr><td align="center"><b>ChangeSeverityCommand</b> (new)</td></tr>
+            <tr><td align="center"><b>BulkTriageCommand</b> (composite, new)</td></tr>
+            <hr/>
+            <tr><td align="left">- previousState: ReviewItem.Memento</td></tr>
+          </table>>];
+
+        CommandHistory [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FAF6E4">
+            <tr><td align="center"><b>CommandHistory</b><br/><i>&lt;&lt;Invoker + Caretaker&gt;&gt;</i> (F12)</td></tr>
+            <hr/>
+            <tr><td align="left">- undoStack / redoStack: Deque<br/>- log: List&lt;LogEntry&gt;</td></tr>
+            <hr/>
+            <tr><td align="left">+ execute(ReviewCommand): void<br/>+ undo()/redo(): Optional<br/>+ renderLog(): String</td></tr>
+          </table>>];
+    }
+
+    /* ---------------------------------------------------------------- export + repo */
+
+    subgraph cluster_export {
+        label = "export  -  Template Method + Factory Method (F09)";
+        style = "rounded";
+        color = "#8FB4C8";
+        fontname = "Helvetica-Bold";
+        fontsize = 11;
+        fontcolor = "#33607A";
+
+        ReportExporter [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FFF6E0">
+            <tr><td align="center"><i>&lt;&lt;interface&gt;&gt;</i><br/><b>ReportExporter</b></td></tr>
+            <hr/>
+            <tr><td align="left">+ export(ReviewReport, Path): void</td></tr>
+          </table>>];
+
+        AbstractReportExporter [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#E6F0F6">
+            <tr><td align="center"><i>&lt;&lt;abstract&gt;&gt;</i><br/><b>AbstractReportExporter</b><br/><i>&lt;&lt;Template Method&gt;&gt;</i></td></tr>
+            <hr/>
+            <tr><td align="left"><b>+ export(): final</b><br/># writeHeader/Summary/Findings: abstract<br/># writeDecisionRecord/Footer: abstract<br/># writeToDisk(): hook</td></tr>
+          </table>>];
+
+        Exporters [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#E6F0F6">
+            <tr><td align="center"><b>PdfExporter</b> &#8594; SimplePdfWriter</td></tr>
+            <tr><td align="center"><b>MarkdownExporter</b> | <b>HtmlExporter</b></td></tr>
+            <tr><td align="center"><b>JsonExporter</b></td></tr>
+          </table>>];
+
+        ExporterFactory [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#E6F0F6">
+            <tr><td align="center"><b>ExporterFactory</b><br/><i>&lt;&lt;Factory Method&gt;&gt;</i></td></tr>
+            <hr/>
+            <tr><td align="left">+ create(String): Optional {static}<br/>+ createForFileName(String): Optional {static}</td></tr>
+          </table>>];
+    }
+
+    RepoManager [label = <
+      <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#EDEDED">
+        <tr><td align="center"><b>RepoManager</b> (F01, F08)</td></tr>
+        <hr/>
+        <tr><td align="left">- rootPath: Path<br/>- rootNode: FileNode</td></tr>
+        <hr/>
+        <tr><td align="left">+ loadFiles(String): FileNode<br/>+ cloneAndLoad(String): FileNode<br/>+ readFile(String): String  <i>(sandboxed)</i><br/>+ getDiff(String, String): String<br/>+ listCommits(int): List&lt;String&gt;</td></tr>
+      </table>>];
+
+    StandardsChecker [label = <
+      <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#EDEDED">
+        <tr><td align="center"><b>StandardsChecker</b> (F06 deterministic half)</td></tr>
+        <hr/>
+        <tr><td align="left">+ loadRules(String): void<br/>+ check(String, String): List&lt;ReviewItem&gt;<br/>+ describeRules(): String</td></tr>
+      </table>>];
+
+    /* ---------------------------------------------------------------- relations */
+
+    edge [arrowhead = "empty", style = "dashed"];   /* realisation */
+    CodeReviewGUI -> Observer;
+    CLIView       -> Observer;
+    ReviewStrategy -> ReviewStrategy [style=invis];
+    AbstractReviewStrategy -> ReviewStrategy;
+    Transports    -> LLMProvider;
+    LLMProviderDecorator -> LLMProvider;
+    ConcreteCommands -> ReviewCommand;
+    ConcreteTools -> AgentTool;
+    AbstractReportExporter -> ReportExporter;
+
+    edge [arrowhead = "empty", style = "solid"];    /* generalisation */
+    ConcreteStrategies -> AbstractReviewStrategy;
+    Decorators -> LLMProviderDecorator;
+    Exporters -> AbstractReportExporter;
+    ReviewReport -> Subject;
+
+    edge [arrowhead = "vee", style = "solid", arrowtail = "diamond", dir = "both"]; /* composition */
+    AgentController -> ReviewAgent    [label = "agent"];
+    AgentController -> RepoManager    [label = "repo"];
+    AgentController -> ReviewReport   [label = "report"];
+    AgentController -> CommandHistory [label = "history"];
+    ReviewAgent     -> AgentPlanner   [label = "planner"];
+    ReviewAgent     -> AgentMemory    [label = "memory"];
+    ReviewAgent     -> CodeRetriever  [label = "retriever"];
+    ReviewAgent     -> ToolRegistry   [label = "tools"];
+    ReviewReport    -> ReviewItem     [label = "1..*"];
+    FileNode        -> FileNode       [label = "children 0..*"];
+
+    edge [arrowhead = "vee", style = "solid", arrowtail = "none", dir = "forward"]; /* association */
+    CodeReviewGUI -> AgentController;
+    CLIView       -> AgentController;
+    Subject       -> Observer          [label = "notifies 0..*", style="dashed"];
+    ReviewAgent   -> ReviewStrategy    [label = "selects"];
+    ReviewAgent   -> LLMClient         [label = "uses"];
+    AbstractReviewStrategy -> LLMClient [label = "one call"];
+    AbstractReviewStrategy -> PromptBuilder [label = "builds prompt"];
+    ConcreteStrategies -> StandardsChecker [label = "StyleStrategy only"];
+    AgentPlanner  -> LLMClient         [label = "plan / decide / synthesise"];
+    AgentPlanner  -> ToolRegistry      [label = "acts through"];
+    ToolRegistry  -> AgentTool         [label = "0..*"];
+    ConcreteTools -> RepoManager       [label = "sandboxed access"];
+    LLMClient     -> LLMProviderFactory [label = "creates chain"];
+    LLMProviderFactory -> LLMProvider;
+    LLMProviderDecorator -> LLMProvider [label = "inner", style="dashed"];
+    ConcreteCommands -> ReviewItem     [label = "mutates + memento"];
+    CommandHistory -> ReviewCommand    [label = "0..*"];
+    AgentController -> ExporterFactory [label = "selects format"];
+    ExporterFactory -> Exporters;
+    AbstractReportExporter -> ReviewReport [label = "reads"];
+    RepoManager   -> FileNode          [label = "builds tree"];
+    ReviewReport  -> ReviewSnapshot    [label = "snapshot()"];
+}

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1460" height="1426" viewBox="0 0 1460 1426"><defs><marker id="solid" markerWidth="11" markerHeight="8" refX="10" refY="4" orient="auto"><path d="M0,0 L11,4 L0,8 z" fill="#1C1F23"/></marker><marker id="open" markerWidth="11" markerHeight="8" refX="10" refY="4" orient="auto"><path d="M0,0 L11,4 L0,8" fill="none" stroke="#5B6570" stroke-width="1.3"/></marker></defs><rect width="1460" height="1426" fill="white"/>
+<text x="730.0" y="34" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#1C1F23">SD04 (NEW) - Autonomous Multi-Step Audit (F11) - the agent reasoning loop</text>
+<rect x="30" y="272" width="1400" height="264" rx="4" fill="none" stroke="#2D6CDF" stroke-width="1.2" stroke-dasharray="none" opacity="0.85"/>
+<path d="M 30 272 h 150 l 14 20 v 6 h -164 z" fill="#E8EFFB" stroke="#2D6CDF" stroke-width="1.2"/>
+<text x="40" y="289" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#2D6CDF">1. PLAN</text>
+<rect x="30" y="534" width="1400" height="546" rx="4" fill="none" stroke="#2D6CDF" stroke-width="1.2" stroke-dasharray="none" opacity="0.85"/>
+<path d="M 30 534 h 150 l 14 20 v 6 h -164 z" fill="#E8EFFB" stroke="#2D6CDF" stroke-width="1.2"/>
+<text x="40" y="551" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#2D6CDF">loop  [until the goal is met or the step budget is spent]</text>
+<rect x="30" y="1078" width="1400" height="264" rx="4" fill="none" stroke="#2D6CDF" stroke-width="1.2" stroke-dasharray="none" opacity="0.85"/>
+<path d="M 30 1078 h 150 l 14 20 v 6 h -164 z" fill="#E8EFFB" stroke="#2D6CDF" stroke-width="1.2"/>
+<text x="40" y="1095" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#2D6CDF">5. CONCLUDE</text>
+<rect x="19.0" y="94" width="162" height="34" rx="5" fill="#F2F5FA" stroke="#2D6CDF" stroke-width="1.4"/>
+<text x="100.0" y="116" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1C1F23">Developer</text>
+<line x1="100.0" y1="128" x2="100.0" y2="1396" stroke="#8A93A0" stroke-width="1.1" stroke-dasharray="6 5"/>
+<rect x="199.0" y="94" width="162" height="34" rx="5" fill="#EAF0FA" stroke="#2D6CDF" stroke-width="1.4"/>
+<text x="280.0" y="116" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1C1F23">CodeReviewGUI</text>
+<line x1="280.0" y1="128" x2="280.0" y2="1396" stroke="#8A93A0" stroke-width="1.1" stroke-dasharray="6 5"/>
+<rect x="379.0" y="94" width="162" height="34" rx="5" fill="#EAF0FA" stroke="#2D6CDF" stroke-width="1.4"/>
+<text x="460.0" y="116" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1C1F23">AgentController</text>
+<line x1="460.0" y1="128" x2="460.0" y2="1396" stroke="#8A93A0" stroke-width="1.1" stroke-dasharray="6 5"/>
+<rect x="559.0" y="94" width="162" height="34" rx="5" fill="#EAF0FA" stroke="#2D6CDF" stroke-width="1.4"/>
+<text x="640.0" y="116" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1C1F23">AgentPlanner</text>
+<line x1="640.0" y1="128" x2="640.0" y2="1396" stroke="#8A93A0" stroke-width="1.1" stroke-dasharray="6 5"/>
+<rect x="739.0" y="94" width="162" height="34" rx="5" fill="#EAF0FA" stroke="#2D6CDF" stroke-width="1.4"/>
+<text x="820.0" y="116" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1C1F23">LLMClient</text>
+<line x1="820.0" y1="128" x2="820.0" y2="1396" stroke="#8A93A0" stroke-width="1.1" stroke-dasharray="6 5"/>
+<rect x="919.0" y="94" width="162" height="34" rx="5" fill="#EAF0FA" stroke="#2D6CDF" stroke-width="1.4"/>
+<text x="1000.0" y="116" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1C1F23">ToolRegistry</text>
+<line x1="1000.0" y1="128" x2="1000.0" y2="1396" stroke="#8A93A0" stroke-width="1.1" stroke-dasharray="6 5"/>
+<rect x="1099.0" y="94" width="162" height="34" rx="5" fill="#EAF0FA" stroke="#2D6CDF" stroke-width="1.4"/>
+<text x="1180.0" y="116" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1C1F23">AnalyzeFileTool</text>
+<line x1="1180.0" y1="128" x2="1180.0" y2="1396" stroke="#8A93A0" stroke-width="1.1" stroke-dasharray="6 5"/>
+<rect x="1279.0" y="94" width="162" height="34" rx="5" fill="#EAF0FA" stroke="#2D6CDF" stroke-width="1.4"/>
+<text x="1360.0" y="116" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1C1F23">AgentMemory</text>
+<line x1="1360.0" y1="128" x2="1360.0" y2="1396" stroke="#8A93A0" stroke-width="1.1" stroke-dasharray="6 5"/>
+<line x1="100.0" y1="160" x2="273.0" y2="160" stroke="#1C1F23" stroke-width="1.4" marker-end="url(#solid)"/><text x="190.0" y="151" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1C1F23">click "Run autonomous audit", states a goal</text>
+<line x1="280.0" y1="206" x2="453.0" y2="206" stroke="#1C1F23" stroke-width="1.4" marker-end="url(#solid)"/><text x="370.0" y="197" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1C1F23">runAudit(goal, maxSteps, listener)</text>
+<line x1="460.0" y1="252" x2="633.0" y2="252" stroke="#1C1F23" stroke-width="1.4" marker-end="url(#solid)"/><text x="550.0" y="243" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1C1F23">run(goal, maxSteps)</text>
+<line x1="640.0" y1="316" x2="993.0" y2="316" stroke="#1C1F23" stroke-width="1.4" marker-end="url(#solid)"/><text x="820.0" y="307" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1C1F23">execute("list_files", "")</text>
+<line x1="1000.0" y1="362" x2="647.0" y2="362" stroke="#5B6570" stroke-width="1.4" stroke-dasharray="7 5" marker-end="url(#open)"/><text x="820.0" y="353" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#5B6570">repository inventory</text>
+<line x1="640.0" y1="408" x2="813.0" y2="408" stroke="#1C1F23" stroke-width="1.4" marker-end="url(#solid)"/><text x="730.0" y="399" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1C1F23">sendPrompt(planner role, goal + tools + inventory)</text>
+<line x1="820.0" y1="454" x2="647.0" y2="454" stroke="#5B6570" stroke-width="1.4" stroke-dasharray="7 5" marker-end="url(#open)"/><text x="730.0" y="445" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#5B6570">ordered plan, grounded in real files</text>
+<line x1="640.0" y1="500" x2="287.0" y2="500" stroke="#5B6570" stroke-width="1.4" stroke-dasharray="7 5" marker-end="url(#open)"/><text x="460.0" y="491" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#5B6570">updateUI(AGENT_STEP, PLAN)</text>
+<line x1="640.0" y1="578" x2="1353.0" y2="578" stroke="#1C1F23" stroke-width="1.4" marker-end="url(#solid)"/><text x="1000.0" y="569" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1C1F23">renderShortTerm(12)</text>
+<line x1="1360.0" y1="624" x2="647.0" y2="624" stroke="#5B6570" stroke-width="1.4" stroke-dasharray="7 5" marker-end="url(#open)"/><text x="1000.0" y="615" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#5B6570">everything observed so far</text>
+<line x1="640.0" y1="670" x2="813.0" y2="670" stroke="#1C1F23" stroke-width="1.4" marker-end="url(#solid)"/><text x="730.0" y="661" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1C1F23">sendConversation(goal + plan + observations)</text>
+<line x1="820.0" y1="716" x2="647.0" y2="716" stroke="#5B6570" stroke-width="1.4" stroke-dasharray="7 5" marker-end="url(#open)"/><text x="730.0" y="707" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#5B6570">{"thought":..., "tool":..., "input":...}</text>
+<path d="M 658.0 740 h 265.0 l 11 11 v 46 h -276.0 z" fill="#FFF8E6" stroke="#D9B45B" stroke-width="1.1"/><text x="668.0" y="756" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#6B5A2E">2. DECIDE - exactly one action per turn.</text><text x="668.0" y="771" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#6B5A2E">A repeated action is blocked and fed back</text><text x="668.0" y="786" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#6B5A2E">as an observation the agent must react to.</text>
+<line x1="640.0" y1="814" x2="993.0" y2="814" stroke="#1C1F23" stroke-width="1.4" marker-end="url(#solid)"/><text x="820.0" y="805" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1C1F23">execute(toolName, toolInput)</text>
+<line x1="1000.0" y1="860" x2="1173.0" y2="860" stroke="#1C1F23" stroke-width="1.4" marker-end="url(#solid)"/><text x="1090.0" y="851" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1C1F23">execute("LoginService.java|security")</text>
+<line x1="1180.0" y1="906" x2="1007.0" y2="906" stroke="#5B6570" stroke-width="1.4" stroke-dasharray="7 5" marker-end="url(#open)"/><text x="1090.0" y="897" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#5B6570">findings recorded in the report</text>
+<line x1="1000.0" y1="952" x2="647.0" y2="952" stroke="#5B6570" stroke-width="1.4" stroke-dasharray="7 5" marker-end="url(#open)"/><text x="820.0" y="943" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#5B6570">observation text</text>
+<line x1="640.0" y1="998" x2="1353.0" y2="998" stroke="#1C1F23" stroke-width="1.4" marker-end="url(#solid)"/><text x="1000.0" y="989" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1C1F23">remember(observation)</text>
+<line x1="640.0" y1="1044" x2="287.0" y2="1044" stroke="#5B6570" stroke-width="1.4" stroke-dasharray="7 5" marker-end="url(#open)"/><text x="460.0" y="1035" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#5B6570">updateUI(AGENT_STEP, ACTION / OBSERVATION)</text>
+<line x1="640.0" y1="1122" x2="813.0" y2="1122" stroke="#1C1F23" stroke-width="1.4" marker-end="url(#solid)"/><text x="730.0" y="1113" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1C1F23">sendPrompt(reporter role, all observations)</text>
+<line x1="820.0" y1="1168" x2="647.0" y2="1168" stroke="#5B6570" stroke-width="1.4" stroke-dasharray="7 5" marker-end="url(#open)"/><text x="730.0" y="1159" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#5B6570">written synthesis</text>
+<line x1="640.0" y1="1214" x2="467.0" y2="1214" stroke="#5B6570" stroke-width="1.4" stroke-dasharray="7 5" marker-end="url(#open)"/><text x="550.0" y="1205" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#5B6570">conclusion</text>
+<line x1="460.0" y1="1260" x2="287.0" y2="1260" stroke="#5B6570" stroke-width="1.4" stroke-dasharray="7 5" marker-end="url(#open)"/><text x="370.0" y="1251" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#5B6570">updateUI(TASK_FINISHED)</text>
+<line x1="280.0" y1="1306" x2="107.0" y2="1306" stroke="#5B6570" stroke-width="1.4" stroke-dasharray="7 5" marker-end="url(#open)"/><text x="190.0" y="1297" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#5B6570">trace panel + findings table are populated</text>
+</svg>

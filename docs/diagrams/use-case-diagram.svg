@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="720" viewBox="0 0 1180 720"><defs><marker id="solid" markerWidth="11" markerHeight="8" refX="10" refY="4" orient="auto"><path d="M0,0 L11,4 L0,8 z" fill="#1C1F23"/></marker><marker id="open" markerWidth="11" markerHeight="8" refX="10" refY="4" orient="auto"><path d="M0,0 L11,4 L0,8" fill="none" stroke="#5B6570" stroke-width="1.3"/></marker></defs><rect width="1180" height="720" fill="white"/>
+<text x="590.0" y="34" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1C1F23">Use-Case Diagram - AI Code Review Agent (Stage 2, implemented)</text>
+<rect x="250" y="62" width="680" height="612" rx="8" fill="none" stroke="#8A93A0" stroke-width="1.6"/>
+<text x="268" y="88" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#5B6570">System: AI Code Review Agent</text>
+<ellipse cx="420" cy="150" rx="128" ry="52" fill="#EAF0FA" stroke="#2D6CDF" stroke-width="1.6"/>
+<text x="420" y="134" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1C1F23">UC01</text>
+<text x="420" y="151" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1C1F23">Import &amp; Browse</text>
+<text x="420" y="166" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1C1F23">Repository</text>
+<text x="420" y="183" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="9.5" fill="#5B6570">F01</text>
+<ellipse cx="760" cy="150" rx="128" ry="52" fill="#EAF0FA" stroke="#2D6CDF" stroke-width="1.6"/>
+<text x="760" y="134" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1C1F23">UC02</text>
+<text x="760" y="151" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1C1F23">Perform Code</text>
+<text x="760" y="166" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1C1F23">Analysis</text>
+<text x="760" y="183" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="9.5" fill="#5B6570">F02, F03, F06</text>
+<ellipse cx="420" cy="285" rx="128" ry="52" fill="#EAF0FA" stroke="#2D6CDF" stroke-width="1.6"/>
+<text x="420" y="269" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1C1F23">UC03</text>
+<text x="420" y="286" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1C1F23">Generate Code</text>
+<text x="420" y="301" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1C1F23">Modifications</text>
+<text x="420" y="318" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="9.5" fill="#5B6570">F04, F05</text>
+<ellipse cx="760" cy="285" rx="128" ry="52" fill="#EAF0FA" stroke="#2D6CDF" stroke-width="1.6"/>
+<text x="760" y="269" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1C1F23">UC04</text>
+<text x="760" y="286" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1C1F23">Manage Review</text>
+<text x="760" y="301" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1C1F23">Findings</text>
+<text x="760" y="318" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="9.5" fill="#5B6570">F07, F08, F09, F12</text>
+<ellipse cx="420" cy="420" rx="128" ry="52" fill="#EAF0FA" stroke="#2D6CDF" stroke-width="1.6"/>
+<text x="420" y="404" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1C1F23">UC05</text>
+<text x="420" y="421" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1C1F23">Query AI</text>
+<text x="420" y="436" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1C1F23">Assistant</text>
+<text x="420" y="453" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="9.5" fill="#5B6570">F10</text>
+<ellipse cx="760" cy="420" rx="128" ry="52" fill="#FDF1E3" stroke="#B35309" stroke-width="1.6"/>
+<text x="760" y="404" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1C1F23">UC06</text>
+<text x="760" y="421" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1C1F23">Run Autonomous</text>
+<text x="760" y="436" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1C1F23">Audit</text>
+<text x="760" y="453" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="9.5" fill="#5B6570">F11</text>
+<text x="760" y="384" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#B35309">NEW IN STAGE 2</text>
+<ellipse cx="590" cy="570" rx="128" ry="52" fill="#FDF1E3" stroke="#B35309" stroke-width="1.6"/>
+<text x="590" y="554" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1C1F23">UC07</text>
+<text x="590" y="571" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1C1F23">Search Codebase</text>
+<text x="590" y="586" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1C1F23">(retrieval)</text>
+<text x="590" y="603" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="9.5" fill="#5B6570">F13</text>
+<text x="590" y="534" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#B35309">NEW IN STAGE 2</text>
+<circle cx="120" cy="256" r="13" fill="white" stroke="#1C1F23" stroke-width="1.8"/>
+<line x1="120" y1="269" x2="120" y2="304" stroke="#1C1F23" stroke-width="1.8"/>
+<line x1="100" y1="282" x2="140" y2="282" stroke="#1C1F23" stroke-width="1.8"/>
+<line x1="120" y1="304" x2="103" y2="330" stroke="#1C1F23" stroke-width="1.8"/>
+<line x1="120" y1="304" x2="137" y2="330" stroke="#1C1F23" stroke-width="1.8"/>
+<text x="120" y="350" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#1C1F23">Developer</text>
+<circle cx="1060" cy="186" r="13" fill="white" stroke="#1C1F23" stroke-width="1.8"/>
+<line x1="1060" y1="199" x2="1060" y2="234" stroke="#1C1F23" stroke-width="1.8"/>
+<line x1="1040" y1="212" x2="1080" y2="212" stroke="#1C1F23" stroke-width="1.8"/>
+<line x1="1060" y1="234" x2="1043" y2="260" stroke="#1C1F23" stroke-width="1.8"/>
+<line x1="1060" y1="234" x2="1077" y2="260" stroke="#1C1F23" stroke-width="1.8"/>
+<text x="1060" y="280" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#1C1F23">LLM Service</text>
+<circle cx="1060" cy="456" r="13" fill="white" stroke="#1C1F23" stroke-width="1.8"/>
+<line x1="1060" y1="469" x2="1060" y2="504" stroke="#1C1F23" stroke-width="1.8"/>
+<line x1="1040" y1="482" x2="1080" y2="482" stroke="#1C1F23" stroke-width="1.8"/>
+<line x1="1060" y1="504" x2="1043" y2="530" stroke="#1C1F23" stroke-width="1.8"/>
+<line x1="1060" y1="504" x2="1077" y2="530" stroke="#1C1F23" stroke-width="1.8"/>
+<text x="1060" y="550" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#1C1F23">Local Git /</text>
+<text x="1060" y="565" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#1C1F23">File System</text>
+<line x1="150" y1="300" x2="292" y2="150" stroke="#8A93A0" stroke-width="1.1"/>
+<line x1="150" y1="300" x2="632" y2="150" stroke="#8A93A0" stroke-width="1.1"/>
+<line x1="150" y1="300" x2="292" y2="285" stroke="#8A93A0" stroke-width="1.1"/>
+<line x1="150" y1="300" x2="632" y2="285" stroke="#8A93A0" stroke-width="1.1"/>
+<line x1="150" y1="300" x2="292" y2="420" stroke="#8A93A0" stroke-width="1.1"/>
+<line x1="150" y1="300" x2="632" y2="420" stroke="#8A93A0" stroke-width="1.1"/>
+<line x1="150" y1="300" x2="462" y2="570" stroke="#8A93A0" stroke-width="1.1"/>
+<line x1="1030" y1="230" x2="888" y2="150" stroke="#8A93A0" stroke-width="1.1"/>
+<line x1="1030" y1="230" x2="548" y2="285" stroke="#8A93A0" stroke-width="1.1"/>
+<line x1="1030" y1="230" x2="548" y2="420" stroke="#8A93A0" stroke-width="1.1"/>
+<line x1="1030" y1="230" x2="888" y2="420" stroke="#8A93A0" stroke-width="1.1"/>
+<line x1="1030" y1="500" x2="548" y2="150" stroke="#8A93A0" stroke-width="1.1"/>
+<line x1="1030" y1="500" x2="888" y2="285" stroke="#8A93A0" stroke-width="1.1"/>
+<line x1="1030" y1="500" x2="718" y2="570" stroke="#8A93A0" stroke-width="1.1"/>
+<rect x="40" y="600" width="196" height="76" rx="6" fill="#F7F8FA" stroke="#DDE2E8"/>
+<text x="52" y="622" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#5B6570">Legend</text>
+<ellipse cx="64" cy="640" rx="11" ry="7" fill="#EAF0FA" stroke="#2D6CDF"/>
+<text x="82" y="644" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1C1F23">From Stage 1</text>
+<ellipse cx="64" cy="662" rx="11" ry="7" fill="#FDF1E3" stroke="#B35309"/>
+<text x="82" y="666" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1C1F23">Added in Stage 2</text>
+</svg>
