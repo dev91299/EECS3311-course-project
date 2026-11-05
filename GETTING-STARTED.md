@@ -365,50 +365,99 @@ The short version:
 
 ## Step 10 — Fill in the blanks in the report
 
-Open `docs/stage2-report.md` in a text editor and search for `«FILL IN`. There are blanks in
-four places:
+**Do not open `stage2-report.pdf` in Word or a text editor to edit it.** A PDF is finished
+output, not a document. Word tries to convert it back into something editable and wrecks the
+layout — blurred images, tables full of stray spaces. That is Word's conversion failing, not
+your file.
+
+Use this instead.
+
+### 10a. Open the fill-in version
+
+In the `docs` folder there is a file called **`stage2-report-FILLABLE.html`**.
+
+Double-click it. It opens in your web browser and looks exactly like the report, except every
+blank is a **yellow box you can click and type into**.
+
+> Use **Chrome** or **Edge**. Safari and Firefox work for typing, but their "Save as PDF" is
+> less faithful.
+
+### 10b. Fill in the yellow boxes
+
+- Click a box, type, click away. That is all.
+- Your answers **save automatically in the browser as you type**, so closing the tab by
+  accident will not lose them.
+- The counter at the top left says how many blanks are left. Press **Jump to next blank** to be
+  taken to the next one.
+- Press **Back up answers** to download a small file of your answers, in case you switch
+  computers. **Restore answers** loads it back.
+
+What goes in each place:
 
 | Where | What to put |
 |---|---|
 | Top of the document | Your repository URL, your name and student number |
 | Section 5.1 | Which AI tools you used, which models, and the token and money cost |
-| Section 5.2 | Run the CLI `usage` command after a session and paste what it prints |
+| Section 5.2 | Run the CLI `usage` command after a session and copy the numbers it prints |
 | Section 5.3 | Two or three of your own real exchanges with an AI tool |
 | Section 6.1 | Your commit counts and links for each period |
 | Section 7 | Your video links and timestamps |
 
-**For section 5.1**, be honest. If you used Claude on a subscription, say so and say the
-subscription cost; subscriptions do not expose per-token figures and the marker knows that.
-Where to find usage: Claude → Settings → Usage. ChatGPT → Settings → there is no per-token
-view on Plus, so state the subscription. Copilot → your GitHub billing page.
+**For section 5.1**, be honest. If you used Claude or ChatGPT on a monthly subscription, say so
+and give the subscription cost; subscriptions do not show per-token figures and your marker
+knows that. Where to look: Claude → Settings → Usage. Copilot → your GitHub billing page.
 
-**For section 5.3**, use your own real conversations. The three examples in the report show
-the shape: what you asked, what came back, and **what you changed about it**. That last part
-is what earns the marks — it shows you reviewed the output rather than pasting it.
+**For section 5.3**, use your own real conversations. The three examples already in the report
+show the shape: what you asked, what came back, and **what you changed about it**. That last
+part is what earns the marks, because it shows you reviewed the output instead of pasting it.
 
-### Then rebuild the PDF
+### 10c. Save it back out as a PDF
+
+1. Check the counter says **0 blanks left**. Anything you miss prints as a red
+   **[ TO BE COMPLETED ]**, so you cannot submit a half-finished report by accident.
+2. Press **Save as PDF** in the toolbar (or `Ctrl+P` / `Cmd+P`).
+3. In the print dialog set:
+   - **Destination:** Save as PDF
+   - **Paper size:** A4
+   - **Margins:** Default
+   - **Background graphics:** ticked ← *important, or the tables lose their shading*
+   - **Headers and footers:** unticked
+4. Save it as **`stage2-report.pdf`**, replacing the old one in your project folder.
+
+The yellow highlighting does not appear in the PDF. The diagrams come out **sharper** this way
+than in the version I built, because the browser embeds them at full resolution.
+
+### 10d. Commit it
 
 ```
-cd docs
-./build-report.sh
-```
-
-This regenerates `stage2-report.pdf` and `stage2-report.docx` in the project folder.
-
-> **If `build-report.sh` fails** because pandoc is not installed, you can instead open
-> `stage2-report.docx` in Word, make the same edits there, and save as PDF (File → Save As →
-> PDF). Make sure the file is still named `stage2-report.pdf`.
-
-Then commit it:
-
-```
-cd ..
 git add -A
 git commit -m "Fill in report details, video links and commit summary"
 git push
 ```
 
 ---
+
+### If you would rather use Word
+
+`stage2-report.docx` is a real Word document — not a converted PDF — so you can open and edit
+it normally. Use **Find and Replace** (`Ctrl+H`) to search for `«` and work through each
+marker, then **File → Save As → PDF**, named `stage2-report.pdf`.
+
+This works fine. The only downside is that the Word version has plainer styling than the
+designed one, so the result will not look identical to the PDF you have now. If you want the
+report to look exactly as it does today, use the browser method above.
+
+### If you change the report text itself
+
+The real source is `docs/stage2-report.md`. If you edit that, regenerate everything with:
+
+```
+cd docs
+./build-report.sh        # rebuilds stage2-report.pdf and .docx
+python3 make-fillable.py # rebuilds the fill-in version
+```
+
+This needs `pandoc` installed. You do not need it for anything above.
 
 ## Step 11 — Final submission checklist
 
