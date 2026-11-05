@@ -365,67 +365,72 @@ The short version:
 
 ## Step 10 — Fill in the blanks in the report
 
-**Do not open `stage2-report.pdf` in Word or a text editor to edit it.** A PDF is finished
-output, not a document. Word tries to convert it back into something editable and wrecks the
-layout — blurred images, tables full of stray spaces. That is Word's conversion failing, not
-your file.
+**Do not try to edit the PDF, and do not open it in a text editor** — a PDF is not a text
+file, so a text editor shows you the raw compressed data, which is why it looked like
+nonsense.
 
-Use this instead.
+Instead there is a page built for exactly this job.
 
-### 10a. Open the fill-in version
+### 10a. Open the fill-in page
 
-In the `docs` folder there is a file called **`stage2-report-FILLABLE.html`**.
+In your file manager, go to the `docs` folder and **double-click
+`stage2-report-FILL-IN.html`**. It opens in your web browser.
 
-Double-click it. It opens in your web browser and looks exactly like the report, except every
-blank is a **yellow box you can click and type into**.
+> Use **Chrome** or **Edge** if you have one. Safari and Firefox work, but Chrome gives the
+> most faithful page breaks when you save the PDF.
 
-> Use **Chrome** or **Edge**. Safari and Firefox work for typing, but their "Save as PDF" is
-> less faithful.
+You will see the whole report, with a dark blue bar across the top that says
+**"0 of 76 filled"**.
 
 ### 10b. Fill in the yellow boxes
 
-- Click a box, type, click away. That is all.
-- Your answers **save automatically in the browser as you type**, so closing the tab by
-  accident will not lose them.
-- The counter at the top left says how many blanks are left. Press **Jump to next blank** to be
-  taken to the next one.
-- Press **Back up answers** to download a small file of your answers, in case you switch
-  computers. **Restore answers** loads it back.
+- Every **yellow box** is something you type in. Click it and type. It turns **green** once
+  it has something in it.
+- The counter at the top tells you how many are left.
+- Press **Next blank** to jump straight to the next one you have not done.
+- **Blue INSTRUCTIONS boxes** explain what goes where. They are guidance only and will
+  **not** appear in your finished PDF.
+- Your typing is saved automatically in the browser. You can close the page and come back
+  later and it will all still be there.
 
-What goes in each place:
+What the 76 blanks are, roughly:
 
 | Where | What to put |
 |---|---|
-| Top of the document | Your repository URL, your name and student number |
-| Section 5.1 | Which AI tools you used, which models, and the token and money cost |
-| Section 5.2 | Run the CLI `usage` command after a session and copy the numbers it prints |
+| Top of the report | Your repository URL, your name and student number |
+| Section 5.1 | The AI tools you used, the models, and the token and money cost |
+| Section 5.2 | Run the CLI `usage` command after a session and copy the numbers in |
 | Section 5.3 | Two or three of your own real exchanges with an AI tool |
 | Section 6.1 | Your commit counts and links for each period |
-| Section 7 | Your video links and timestamps |
+| Section 7 | Your video links and timestamps (two boxes per feature) |
 
-**For section 5.1**, be honest. If you used Claude or ChatGPT on a monthly subscription, say so
-and give the subscription cost; subscriptions do not show per-token figures and your marker
-knows that. Where to look: Claude → Settings → Usage. Copilot → your GitHub billing page.
+**For section 5.1**, be honest. If you used Claude or ChatGPT on a monthly subscription, say
+so and give the subscription cost — subscriptions do not show per-token figures and the
+marker knows that. Where to look: Claude → Settings → Usage. Copilot → your GitHub billing
+page.
 
-**For section 5.3**, use your own real conversations. The three examples already in the report
-show the shape: what you asked, what came back, and **what you changed about it**. That last
-part is what earns the marks, because it shows you reviewed the output instead of pasting it.
+**For section 5.3**, use your own real conversations. The three examples already written in
+the report show the shape: what you asked, what came back, and **what you changed about it**.
+That last part is what earns the marks, because it shows you reviewed the output rather than
+pasting it.
 
-### 10c. Save it back out as a PDF
+### 10c. Save it as a PDF
 
-1. Check the counter says **0 blanks left**. Anything you miss prints as a red
-   **[ TO BE COMPLETED ]**, so you cannot submit a half-finished report by accident.
-2. Press **Save as PDF** in the toolbar (or `Ctrl+P` / `Cmd+P`).
-3. In the print dialog set:
+When the counter says **"76 of 76 filled"** and has turned green:
+
+1. Press the blue **Save as PDF** button at the top (or just press `Ctrl+P`, `Cmd+P` on Mac).
+2. In the dialog that opens, set:
    - **Destination:** Save as PDF
-   - **Paper size:** A4
    - **Margins:** Default
-   - **Background graphics:** ticked ← *important, or the tables lose their shading*
-   - **Headers and footers:** unticked
-4. Save it as **`stage2-report.pdf`**, replacing the old one in your project folder.
+   - **Background graphics:** ticked (this is under "More settings")
+3. Click **Save**, name the file **`stage2-report.pdf`**, and save it into the **top level of
+   the project folder**, replacing the old one.
 
-The yellow highlighting does not appear in the PDF. The diagrams come out **sharper** this way
-than in the version I built, because the browser embeds them at full resolution.
+The yellow highlighting, the blue instruction boxes and the toolbar all disappear
+automatically — the saved PDF looks like a finished report.
+
+> **Safety net:** if you miss a box, it prints as a red **[ STILL BLANK ]** rather than
+> silently disappearing, so flick through the PDF once before you submit.
 
 ### 10d. Commit it
 
@@ -435,29 +440,18 @@ git commit -m "Fill in report details, video links and commit summary"
 git push
 ```
 
----
-
 ### If you would rather use Word
 
-`stage2-report.docx` is a real Word document — not a converted PDF — so you can open and edit
-it normally. Use **Find and Replace** (`Ctrl+H`) to search for `«` and work through each
-marker, then **File → Save As → PDF**, named `stage2-report.pdf`.
+`stage2-report.docx` is there as a fallback. Open it in Word, use **Find** (`Ctrl+F`) to
+search for `FILL IN`, replace each one, then **File → Save As → PDF** and name it
+`stage2-report.pdf`. The HTML method gives a better-looking result, but this works.
 
-This works fine. The only downside is that the Word version has plainer styling than the
-designed one, so the result will not look identical to the PDF you have now. If you want the
-report to look exactly as it does today, use the browser method above.
+### If you change the report's wording
 
-### If you change the report text itself
-
-The real source is `docs/stage2-report.md`. If you edit that, regenerate everything with:
-
-```
-cd docs
-./build-report.sh        # rebuilds stage2-report.pdf and .docx
-python3 make-fillable.py # rebuilds the fill-in version
-```
-
-This needs `pandoc` installed. You do not need it for anything above.
+Only if you want to edit the actual text rather than just the blanks: edit
+`docs/stage2-report.md` in a text editor (that one **is** a plain text file), then run
+`cd docs && ./build-report.sh` to regenerate everything. This needs `pandoc` installed. You
+do not need to do this just to fill in the blanks.
 
 ## Step 11 — Final submission checklist
 
@@ -468,7 +462,8 @@ Go through this one line at a time before you submit.
 - [ ] All source code is pushed (`src/`, `tools/`, `samples/`)
 - [ ] `README.md` is there, and its instructions actually work on a fresh download
 - [ ] `pom.xml` and the build scripts are there
-- [ ] `stage2-report.pdf` is in the repository root and all `«FILL IN»` markers are gone
+- [ ] `stage2-report.pdf` is in the repository root, and flicking through it shows no
+      yellow placeholders and no red `[ STILL BLANK ]` text
 - [ ] Every feature has a video link with a timestamp in section 7
 - [ ] Every video link opens in a **private browsing window** without an access request
 - [ ] No API key is visible in any video, screenshot or committed file

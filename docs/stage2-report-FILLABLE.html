@@ -268,6 +268,11 @@ figcaption { display: none; }
 pre .fillin { min-width: 56px; }
 pre .fillin:empty::before { content: "..."; }
 
+.fillin.static {
+    font-style: italic;
+    color: #8a6d1f;
+}
+
 .fillin:focus {
     background: #fffceb;
     border-color: #2d6cdf;
@@ -289,19 +294,50 @@ pre .fillin:empty::before { content: "..."; }
 @media print {
     #toolbar, #helpbar, #printnote { display: none !important; }
 
+    body.fillable { background: #ffffff; }
+    #sheet {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+    }
+
+    /* A completed field prints as ordinary text - no highlight, no border. */
+    .fillin:not(.static) {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        color: #1c1f23 !important;
+    }
+    /* An unfilled box must be obvious in the printed PDF, not invisible. */
+    .fillin:not(.static):empty::before {
+        content: "[ TO BE COMPLETED ]";
+        color: #b31c1c;
+        font-weight: 700;
+        font-style: normal;
+    }
+    /* In the reference PDF the markers stay visible, with their instructions. */
+    .fillin.static {
+        background: #fff3b0 !important;
+        border: 1px solid #d9b45b !important;
+        padding: 1px 5px !important;
+        color: #6b5a2e !important;
+    }
+
     /* The class diagram is wide; keep it whole and let it fill the text column. It is
        embedded at full resolution, so it stays sharp when zoomed, and the full-size file
        is also in docs/diagrams/ for anyone who wants to open it separately. */
     .wide-figure-page { page-break-inside: avoid; text-align: center; }
     .wide-figure-page img { max-width: 100%; }
 
-    h1 { page-break-after: avoid; }
-    h2, h3, h4 { page-break-after: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
     /* Tables may split across pages - forcing them whole leaves large blank gaps.
        report.css already keeps individual rows intact and repeats the header row. */
     pre, img, blockquote { page-break-inside: avoid; }
     table { page-break-inside: auto; }
-    /* Make Chrome keep the table shading and the coloured headings. */
+
+    /* Make the browser keep the table shading and the coloured headings. */
     * {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;

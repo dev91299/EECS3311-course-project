@@ -338,6 +338,7 @@ ai-code-review-agent/
 ├── samples/demo-project/     sample code with deliberate defects, plus a .rules file
 ├── docs/diagrams/            UML class, use-case and sequence diagrams (+ generators)
 ├── stage2-report.pdf         the Stage 2 Implementation Report
+├── docs/stage2-report-FILL-IN.html   fill-in-the-blanks page; print to PDF from a browser
 ├── .env.example              safe configuration template (no real keys)
 └── build.sh / run.sh / build.bat / run.bat
 ```
