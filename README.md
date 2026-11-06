@@ -387,6 +387,3 @@ A **Builder** (`PromptBuilder`) is also used to assemble prompts from optional p
 
 Coursework for EECS3311 at York University. The sample code in `samples/demo-project`
 contains deliberate security defects for demonstration purposes and must not be reused.
-
-Findings produced by a language model are suggestions for a human reviewer, not a substitute
-for one.
