@@ -407,7 +407,7 @@ of configuration:</p>
 <tr class="odd">
 <td><code>groq</code> <em>(default)</em></td>
 <td><code>https://api.groq.com/openai/v1</code></td>
-<td><code>llama-3.3-70b-versatile</code></td>
+<td><code>openai/gpt-oss-120b</code></td>
 <td>Free tier, no credit card</td>
 </tr>
 <tr class="even">
@@ -1892,7 +1892,7 @@ decorator both implements and wraps the component interface, so a
 decorated provider is indistinguishable from a bare one at every call
 site, and layers can be stacked in any order. The chain’s name reports
 itself:
-<code>Groq(llama-3.3-70b-versatile)+retry(3)+ratelimit+cache+logging</code>.</p>
+<code>Groq(openai/gpt-oss-120b)+retry(3)+ratelimit+cache+logging</code>.</p>
 <p><strong>Why it is useful here.</strong> <code>RetryingProvider</code>
 is the implementation of the alternative flow in sequence diagram SD01
 and use case UC02: a timeout is retried automatically before the user
@@ -3655,10 +3655,11 @@ cost</strong> in the GUI.</p>
     - agent-planning:     <span class="blank" contenteditable="true" spellcheck="false" data-blank="b37" data-hint="n"></span> call(s), <span class="blank" contenteditable="true" spellcheck="false" data-blank="b38" data-hint="n"></span> tokens
     ...</code></pre>
 <p><strong>Runtime money cost:</strong> the default provider (Groq,
-<code>llama-3.3-70b-versatile</code>) is free at the tier used — 30
-requests/minute and 14,400 requests/day, with no credit card required —
-so the runtime inference cost of this project was
-<strong>$0.00</strong>.</p>
+<code>openai/gpt-oss-120b</code>) is free at the tier used, with no
+credit card required, so the runtime inference cost of this project was
+<strong>$0.00</strong>. Groq publishes its current free-tier request
+limits at <a href="https://console.groq.com/docs/rate-limits"
+class="uri">https://console.groq.com/docs/rate-limits</a>.</p>
 <h2 id="representative-interactions">5.3 Representative
 interactions</h2>
 <p><code><span class="guide" data-guide="3">FILL IN: replace these with two or three of your own real exchanges — the prompt you gave, what the tool produced, and what you changed. Keep them short. The three below are the shape the marker is looking for: what was asked, what came back, and what human judgement was applied on top.</span></code></p>

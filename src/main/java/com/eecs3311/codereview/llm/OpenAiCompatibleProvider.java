@@ -38,7 +38,7 @@ public class OpenAiCompatibleProvider implements LLMProvider {
     /**
      * @param baseUrl       root of the API, for example {@code https://api.groq.com/openai/v1}
      * @param apiKey        secret token; may be empty for a local Ollama server
-     * @param model         model identifier, for example {@code llama-3.3-70b-versatile}
+     * @param model         model identifier, for example {@code openai/gpt-oss-120b}
      * @param providerLabel short name used in logs and in the status bar
      * @param timeoutSeconds per-request timeout
      */

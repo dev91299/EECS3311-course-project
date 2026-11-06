@@ -177,12 +177,33 @@ elif printf '%s' "$OUTPUT" | grep -qi "API key was rejected"; then
     exit 1
 
 elif printf '%s' "$OUTPUT" | grep -qi "model name was not found"; then
-    echo "[!!] The key works, but the model name is wrong."
+    echo "[!!] Your key is fine, but the model it asked for no longer exists."
     echo
-    echo "     The free model may have been renamed. Open https://console.groq.com,"
-    echo "     look at the model list, and add a line to your .env file like:"
-    echo "       LLM_MODEL=the-current-model-name"
-    exit 1
+    echo "     Providers retire model IDs every few months. Trying the current"
+    echo "     recommended one instead..."
+    echo
+
+    if grep -qE '^LLM_MODEL=' .env; then
+        sed -i.bak 's|^LLM_MODEL=.*|LLM_MODEL=openai/gpt-oss-120b|' .env && rm -f .env.bak
+    else
+        printf '\nLLM_MODEL=openai/gpt-oss-120b\n' >> .env
+    fi
+
+    RETRY=$(java -cp target/classes com.eecs3311.codereview.app.Main \
+        --cli --repo samples/demo-project \
+        --command "summarize PriceCalculator.java" 2>&1 || true)
+
+    if printf '%s' "$RETRY" | grep -qi "model name was not found"; then
+        echo "     That one is gone too. Open https://console.groq.com/docs/models,"
+        echo "     copy a current model ID, and put it in your .env file as:"
+        echo "       LLM_MODEL=whatever-you-copied"
+        exit 1
+    fi
+
+    echo "[OK] Fixed - now using openai/gpt-oss-120b."
+    echo "     The model's reply to a real request:"
+    echo
+    printf '%s\n' "$RETRY" | grep -v "^Picked up" | tail -n 12 | sed 's/^/     /'
 
 elif printf '%s' "$OUTPUT" | grep -qi "Rate limit reached"; then
     echo "[OK] The key works. (The provider is rate-limiting right now, which means"

@@ -195,7 +195,7 @@ Checking that the key works...
 | `[??] Could not reach the provider` | **Your key is fine — don't regenerate it.** This is a connection problem. Check you are online. School and work networks often block outside sites; try a home network or a phone hotspot. |
 | `[!!] The provider rejected the key` | The key is mistyped or was deleted. Make a new one at <https://console.groq.com> and run the script again. |
 | `[!!] still in OFFLINE MODE` | The file was saved but is not being read. Make sure you are running the script from inside the project folder. |
-| `[!!] the model name is wrong` | The free model was renamed. The message tells you what to add to the file. |
+| `[!!] the model it asked for no longer exists` | **Your key is fine.** Providers retire model IDs every few months. The script switches you to a current one automatically and re-checks. |
 
 ---
 
@@ -590,7 +590,7 @@ Go through this one line at a time before you submit.
 | Cannot find the `.env` file | It starts with a dot, so file managers hide it. Run `./setup-key.sh` instead — you never need to find the file. |
 | `The API key was rejected` | The key is wrong or was deleted. Make a new one at <https://console.groq.com>. |
 | `Rate limit reached` | You are going too fast for the free tier. Wait a minute and carry on. |
-| `The model name was not found` | The free model was renamed. Open the Groq console's model list, pick a current one, and put it in `.env` as `LLM_MODEL=...`. |
+| `The model name was not found` | That model ID was retired. Run `./setup-key.sh` and it switches you to a current one, or pick one from <https://console.groq.com/docs/models> and set `LLM_MODEL=` in `.env`. |
 | Window does not open | Use the CLI instead: `./run.sh --cli`. |
 | `git push` rejected | Try `git push -u origin main --force`. |
 | GitHub asks for a password | It wants a personal access token, not your password. See Step 7d. |

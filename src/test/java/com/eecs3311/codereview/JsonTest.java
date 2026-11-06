@@ -71,10 +71,10 @@ class JsonTest {
 
     @Test
     void roundTripsThroughStringifyAndParse() {
-        Map<String, Object> original = Map.of("model", "llama-3.3-70b-versatile",
+        Map<String, Object> original = Map.of("model", "openai/gpt-oss-120b",
                 "temperature", 0.2, "stream", false);
         Object parsed = Json.parse(Json.stringify(original));
-        assertEquals("llama-3.3-70b-versatile", Json.getString(parsed, "", "model"));
+        assertEquals("openai/gpt-oss-120b", Json.getString(parsed, "", "model"));
     }
 
     @Test

@@ -24,7 +24,7 @@ public interface LLMProvider {
      */
     LLMResponse complete(LLMRequest request) throws LLMException;
 
-    /** A short name describing this layer, for example {@code "groq(llama-3.3-70b-versatile)"}. */
+    /** A short name describing this layer, for example {@code "groq(openai/gpt-oss-120b)"}. */
     String name();
 
     /** True when this provider does not reach a real model. */

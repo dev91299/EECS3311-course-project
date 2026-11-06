@@ -45,7 +45,7 @@ four backends, selected by one line of configuration:
 
 | `LLM_PROVIDER` | Endpoint | Default model | Cost |
 |---|---|---|---|
-| `groq` *(default)* | `https://api.groq.com/openai/v1` | `llama-3.3-70b-versatile` | Free tier, no credit card |
+| `groq` *(default)* | `https://api.groq.com/openai/v1` | `openai/gpt-oss-120b` | Free tier, no credit card |
 | `openrouter` | `https://openrouter.ai/api/v1` | `google/gemma-4-31b-it:free` | Free tier |
 | `ollama` | `http://localhost:11434/v1` | `llama3.1` | Free, runs locally |
 | `openai` | `https://api.openai.com/v1` | `gpt-4o-mini` | Paid |
@@ -761,7 +761,7 @@ provider.
 **How the implementation follows the pattern.** Each decorator both implements and wraps the
 component interface, so a decorated provider is indistinguishable from a bare one at every call
 site, and layers can be stacked in any order. The chain's name reports itself:
-`Groq(llama-3.3-70b-versatile)+retry(3)+ratelimit+cache+logging`.
+`Groq(openai/gpt-oss-120b)+retry(3)+ratelimit+cache+logging`.
 
 **Why it is useful here.** `RetryingProvider` is the implementation of the alternative flow in
 sequence diagram SD01 and use case UC02: a timeout is retried automatically before the user
@@ -1055,9 +1055,10 @@ MODEL USAGE THIS SESSION
     ...
 ```
 
-**Runtime money cost:** the default provider (Groq, `llama-3.3-70b-versatile`) is free at the
-tier used — 30 requests/minute and 14,400 requests/day, with no credit card required — so the
-runtime inference cost of this project was **$0.00**.
+**Runtime money cost:** the default provider (Groq, `openai/gpt-oss-120b`) is free at the
+tier used, with no credit card required, so the runtime inference cost of this project was
+**$0.00**. Groq publishes its current free-tier request limits at
+<https://console.groq.com/docs/rate-limits>.
 
 ## 5.3 Representative interactions
 

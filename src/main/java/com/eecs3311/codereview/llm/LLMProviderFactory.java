@@ -23,7 +23,7 @@ import java.util.function.Consumer;
  * <table border="1">
  *   <caption>Supported backends</caption>
  *   <tr><th>LLM_PROVIDER</th><th>Default base URL</th><th>Default model</th></tr>
- *   <tr><td>groq</td><td>https://api.groq.com/openai/v1</td><td>llama-3.3-70b-versatile</td></tr>
+ *   <tr><td>groq</td><td>https://api.groq.com/openai/v1</td><td>openai/gpt-oss-120b</td></tr>
  *   <tr><td>openrouter</td><td>https://openrouter.ai/api/v1</td><td>google/gemma-4-31b-it:free</td></tr>
  *   <tr><td>ollama</td><td>http://localhost:11434/v1</td><td>llama3.1</td></tr>
  *   <tr><td>openai</td><td>https://api.openai.com/v1</td><td>gpt-4o-mini</td></tr>
@@ -37,7 +37,7 @@ public final class LLMProviderFactory {
     static {
         // provider key -> { base URL, default model, display label }
         PRESETS.put("groq", new String[]{
-                "https://api.groq.com/openai/v1", "llama-3.3-70b-versatile", "Groq"});
+                "https://api.groq.com/openai/v1", "openai/gpt-oss-120b", "Groq"});
         PRESETS.put("openrouter", new String[]{
                 "https://openrouter.ai/api/v1", "google/gemma-4-31b-it:free", "OpenRouter"});
         PRESETS.put("ollama", new String[]{

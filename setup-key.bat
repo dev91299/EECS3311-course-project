@@ -170,15 +170,43 @@ if not errorlevel 1 (
 
 findstr /I /C:"model name was not found" "%TEMP%\keycheck.txt" >nul
 if not errorlevel 1 (
-    echo [!!] The key works, but the model name is wrong.
+    echo [!!] Your key is fine, but the model it asked for no longer exists.
     echo.
-    echo      The free model may have been renamed. Open https://console.groq.com,
-    echo      look at the model list, and add a line to your .env file like:
-    echo        LLM_MODEL=the-current-model-name
-    del "%TEMP%\keycheck.txt"
+    echo      Providers retire model IDs every few months. Trying the current
+    echo      recommended one instead...
     echo.
-    pause
-    exit /b 1
+
+    findstr /B /C:"LLM_MODEL=" ".env" >nul
+    if errorlevel 1 (
+        echo LLM_MODEL=openai/gpt-oss-120b>> ".env"
+    ) else (
+        if exist ".env.tmp" del ".env.tmp"
+        for /f "usebackq delims=" %%L in (".env") do (
+            set "LINE=%%L"
+            set "PREFIX=!LINE:~0,10!"
+            if "!PREFIX!"=="LLM_MODEL=" (
+                echo LLM_MODEL=openai/gpt-oss-120b>> ".env.tmp"
+            ) else (
+                echo !LINE!>> ".env.tmp"
+            )
+        )
+        move /y ".env.tmp" ".env" >nul
+    )
+
+    java -cp target\classes com.eecs3311.codereview.app.Main --cli --repo samples\demo-project --command "summarize PriceCalculator.java" > "%TEMP%\keycheck.txt" 2>&1
+
+    findstr /I /C:"model name was not found" "%TEMP%\keycheck.txt" >nul
+    if not errorlevel 1 (
+        echo      That one is gone too. Open https://console.groq.com/docs/models,
+        echo      copy a current model ID, and put it in your .env file as:
+        echo        LLM_MODEL=whatever-you-copied
+        del "%TEMP%\keycheck.txt"
+        echo.
+        pause
+        exit /b 1
+    )
+
+    echo [OK] Fixed - now using openai/gpt-oss-120b.
 )
 
 echo [OK] The key works. Here is the model's reply to a real request:
