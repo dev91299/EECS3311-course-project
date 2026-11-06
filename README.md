@@ -311,7 +311,7 @@ mvn test
 ./build.sh --check
 ```
 
-This runs 110 assertions covering every design pattern, the deterministic standards checker,
+This runs 118 assertions covering every design pattern, the deterministic standards checker,
 JSON tolerance to malformed model output, the diff engine, the exporters, and a full
 end-to-end run: import a repository, analyse it, triage a finding, write it to agent memory,
 undo, take a snapshot, export a PDF, and run an autonomous audit.

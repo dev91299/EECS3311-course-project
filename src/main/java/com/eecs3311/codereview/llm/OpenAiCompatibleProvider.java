@@ -91,7 +91,8 @@ public class OpenAiCompatibleProvider implements LLMProvider {
                 return parseSuccess(response.body(), latency);
             }
             throw new LLMException(describeFailure(status, response.body()),
-                    isRetryableStatus(status), status);
+                    isRetryableStatus(status), status,
+                    readRetryAfter(response));
 
         } catch (HttpTimeoutException e) {
             // This is the alternative flow drawn in sequence diagram SD01: the retrying
@@ -163,6 +164,33 @@ public class OpenAiCompatibleProvider implements LLMProvider {
             return "";
         }
         return text.length() <= max ? text : text.substring(0, max) + "...";
+    }
+
+    /**
+     * Reads how long the provider wants the caller to wait.
+     *
+     * <p>Prefers the standard {@code retry-after} header. Falls back to the wait named in
+     * the error text, because several providers put a more precise figure there
+     * ("Please try again in 7.2s") than the whole-second header carries.</p>
+     */
+    private double readRetryAfter(HttpResponse<String> response) {
+        java.util.Optional<String> header = response.headers().firstValue("retry-after");
+        if (header.isPresent()) {
+            try {
+                return Double.parseDouble(header.get().trim());
+            } catch (NumberFormatException ignored) {
+                // Non-numeric forms (an HTTP date) are rare here; fall through to the body.
+            }
+        }
+        java.util.regex.Matcher matcher = java.util.regex.Pattern
+                .compile("try again in ([0-9]+(?:\\.[0-9]+)?)\\s*(m?s)",
+                        java.util.regex.Pattern.CASE_INSENSITIVE)
+                .matcher(response.body() == null ? "" : response.body());
+        if (matcher.find()) {
+            double value = Double.parseDouble(matcher.group(1));
+            return "ms".equalsIgnoreCase(matcher.group(2)) ? value / 1000.0 : value;
+        }
+        return 0.0;
     }
 
     /** Timeouts, rate limits and server errors are worth another attempt. */

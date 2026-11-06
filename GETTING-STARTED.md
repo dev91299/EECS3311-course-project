@@ -109,7 +109,7 @@ build.bat --check
 This takes about 30 seconds. You should see a long list ending with:
 
 ```
-  110 passed, 0 failed
+  118 passed, 0 failed
 ```
 
 **That line is important.** It means every part of the program works. If you ever change

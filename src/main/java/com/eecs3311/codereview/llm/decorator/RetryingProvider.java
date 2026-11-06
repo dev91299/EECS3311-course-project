@@ -17,6 +17,9 @@ import java.util.function.Consumer;
  */
 public class RetryingProvider extends LLMProviderDecorator {
 
+    /** Never block a user interface for longer than this on one retry. */
+    private static final long MAX_WAIT_MILLIS = 75_000L;
+
     private final int maxAttempts;
     private final long initialBackoffMillis;
     private final Consumer<String> statusListener;
@@ -51,9 +54,23 @@ public class RetryingProvider extends LLMProviderDecorator {
                     break;
                 }
                 totalRetries++;
-                report("Request failed (" + e.getUserMessage() + "). Retrying attempt "
-                        + (attempt + 1) + " of " + maxAttempts + " in " + backoff + " ms.");
-                sleep(backoff);
+
+                // A rate limit is the one case where the provider knows the correct wait
+                // and we do not. Guessing with exponential backoff fails every time when
+                // the real answer is tens of seconds, so its figure wins when given.
+                long wait = backoff;
+                if (e.getRetryAfterSeconds() > 0) {
+                    wait = Math.round(e.getRetryAfterSeconds() * 1000) + 250;
+                    report("Rate limited. The provider asked for "
+                            + String.format("%.1f", e.getRetryAfterSeconds())
+                            + "s; waiting, then retrying (attempt " + (attempt + 1)
+                            + " of " + maxAttempts + ").");
+                } else {
+                    report("Request failed (" + e.getUserMessage() + "). Retrying attempt "
+                            + (attempt + 1) + " of " + maxAttempts + " in " + backoff + " ms.");
+                }
+
+                sleep(Math.min(wait, MAX_WAIT_MILLIS));
                 backoff *= 2;
             }
         }

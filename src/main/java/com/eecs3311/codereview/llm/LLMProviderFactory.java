@@ -71,7 +71,14 @@ public final class LLMProviderFactory {
                 statusListener);
 
         if (!transport.isOffline()) {
-            chain = new RateLimitingProvider(chain, 28);
+            // Groq's free tier allows 30 requests and 8,000 tokens a minute. The token
+            // ceiling is the binding one for this application, because a single file
+            // analysis carries the code plus its context. Both are configurable, so a
+            // paid tier can raise them without a code change.
+            chain = new RateLimitingProvider(chain,
+                    AppConfig.getInt("LLM_REQUESTS_PER_MINUTE", 28),
+                    AppConfig.getInt("LLM_TOKENS_PER_MINUTE", 8000),
+                    statusListener);
         }
 
         chain = new CachingProvider(chain, 128,

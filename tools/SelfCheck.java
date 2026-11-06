@@ -15,6 +15,7 @@ import com.eecs3311.codereview.llm.LLMResponse;
 import com.eecs3311.codereview.llm.PromptBuilder;
 import com.eecs3311.codereview.llm.decorator.CachingProvider;
 import com.eecs3311.codereview.llm.decorator.LoggingProvider;
+import com.eecs3311.codereview.llm.decorator.RateLimitingProvider;
 import com.eecs3311.codereview.llm.decorator.RetryingProvider;
 import com.eecs3311.codereview.llm.decorator.UsageStats;
 import com.eecs3311.codereview.model.ChatMessage;
@@ -77,6 +78,9 @@ public final class SelfCheck {
 
         section("Decorator pattern - provider chain");
         checkDecorators();
+
+        section("Rate limiting - requests and tokens per minute");
+        checkRateLimiting();
 
         section("Builder pattern - prompt assembly");
         checkPromptBuilder();
@@ -266,6 +270,82 @@ public final class SelfCheck {
         chain.complete(request("y", "test"));
         chain.complete(request("y", "test"));
         check("decorators compose in any order", base.calls.get() == 1);
+    }
+
+    private static void checkRateLimiting() throws Exception {
+        // A provider that always reports a 429 and asks for a specific wait.
+        class Limited implements LLMProvider {
+            private final AtomicInteger calls = new AtomicInteger();
+            private int failuresRemaining;
+
+            @Override
+            public LLMResponse complete(LLMRequest request) throws LLMException {
+                calls.incrementAndGet();
+                if (failuresRemaining > 0) {
+                    failuresRemaining--;
+                    throw new LLMException("Rate limit reached.", true, 429, 0.4);
+                }
+                return new LLMResponse("ok", "stub", 100, 50, 5L, false, false);
+            }
+
+            @Override
+            public String name() {
+                return "limited";
+            }
+        }
+
+        Limited limited = new Limited();
+        limited.failuresRemaining = 1;
+        RetryingProvider retrying = new RetryingProvider(limited, 3, 50L, null);
+
+        long started = System.currentTimeMillis();
+        retrying.complete(request("x", "test"));
+        long elapsed = System.currentTimeMillis() - started;
+
+        check("a 429 is retried after the wait the provider asked for, not the default backoff",
+                elapsed >= 400 && elapsed < 3000);
+        check("the retry-after value is carried on the exception",
+                new LLMException("x", true, 429, 7.5).getRetryAfterSeconds() == 7.5);
+        check("an exception without a retry-after reports zero",
+                new LLMException("x", true, 500).getRetryAfterSeconds() == 0.0);
+
+        // Token accounting: the window must reflect what was actually charged, not the
+        // pre-call estimate, so the next decision is made on real numbers.
+        CountingProvider counting = new CountingProvider();
+        RateLimitingProvider limiter = new RateLimitingProvider(counting, 600, 100_000, null);
+        limiter.complete(request("hello", "test"));
+        check("token spend is recorded in the rolling window",
+                limiter.getTokensInWindow() == 150);
+        limiter.complete(request("hello again", "test"));
+        check("spend accumulates across calls", limiter.getTokensInWindow() == 300);
+
+        // With the ceiling disabled the limiter must not block.
+        RateLimitingProvider unlimited = new RateLimitingProvider(counting, 600, 0, null);
+        long t0 = System.currentTimeMillis();
+        unlimited.complete(request("x", "test"));
+        check("a zero token ceiling disables token throttling",
+                System.currentTimeMillis() - t0 < 1000);
+
+        // A tiny ceiling must force a wait rather than letting the request fail.
+        StringBuilder notices = new StringBuilder();
+        RateLimitingProvider tight = new RateLimitingProvider(counting, 600, 200, notices::append);
+        tight.complete(request("first", "test"));
+        long before = System.currentTimeMillis();
+        Thread waiter = new Thread(() -> {
+            try {
+                tight.complete(request("second", "test"));
+            } catch (LLMException ignored) {
+                // interrupted below
+            }
+        });
+        waiter.start();
+        Thread.sleep(600);
+        boolean blocked = waiter.isAlive();
+        waiter.interrupt();
+        waiter.join(2000);
+        check("exceeding the token ceiling makes the caller wait rather than fail", blocked);
+        check("the user is told why it is waiting",
+                notices.toString().toLowerCase().contains("token limit"));
     }
 
     private static void checkPromptBuilder() {

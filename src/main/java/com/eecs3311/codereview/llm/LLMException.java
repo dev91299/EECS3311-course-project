@@ -13,17 +13,43 @@ public class LLMException extends Exception {
 
     private final boolean retryable;
     private final int statusCode;
+    private final double retryAfterSeconds;
 
     public LLMException(String message, boolean retryable, int statusCode) {
+        this(message, retryable, statusCode, 0.0);
+    }
+
+    /**
+     * @param retryAfterSeconds how long the provider asked the caller to wait, from the
+     *                          {@code retry-after} header or the error text; 0 when it
+     *                          said nothing
+     */
+    public LLMException(String message, boolean retryable, int statusCode,
+                        double retryAfterSeconds) {
         super(message);
         this.retryable = retryable;
         this.statusCode = statusCode;
+        this.retryAfterSeconds = Math.max(0.0, retryAfterSeconds);
     }
 
     public LLMException(String message, Throwable cause, boolean retryable) {
         super(message, cause);
         this.retryable = retryable;
         this.statusCode = 0;
+        this.retryAfterSeconds = 0.0;
+    }
+
+    /**
+     * How long the provider asked the caller to wait before retrying, in seconds.
+     *
+     * <p>A rate limit is the one failure where the provider knows the right wait and the
+     * client does not. Guessing with exponential backoff fails every time when the real
+     * answer is a minute, so this value is preferred whenever it is present.</p>
+     *
+     * @return the requested wait, or 0 when the provider did not specify one
+     */
+    public double getRetryAfterSeconds() {
+        return retryAfterSeconds;
     }
 
     /** True when retrying the identical request might succeed. */
@@ -48,6 +74,13 @@ public class LLMException extends Exception {
             case 404:
                 return "The model name was not found. Check LLM_MODEL in your .env file.";
             case 429:
+                if (retryAfterSeconds > 0) {
+                    return "Rate limit reached. The provider asked to wait "
+                            + Math.round(retryAfterSeconds) + " seconds; that wait has been "
+                            + "made and it is still limiting. Free tiers cap how many tokens "
+                            + "you may send per minute, so try again shortly, or reduce "
+                            + "AGENT_MAX_STEPS in your .env file.";
+                }
                 return "Rate limit reached. Wait a moment and try again.";
             case 500:
             case 502:

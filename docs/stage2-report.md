@@ -101,7 +101,7 @@ long-term memory; the next analysis of related code carries an instruction deriv
 design patterns, the LLM integration with four interchangeable backends, and the autonomous
 agent loop. All ten features proposed in Stage 1 are implemented; none were dropped.
 
-**Verification:** 110 assertions pass in the dependency-free harness (`./build.sh --check`),
+**Verification:** 118 assertions pass in the dependency-free harness (`./build.sh --check`),
 plus a JUnit 5 suite (`mvn test`). Both the GUI and the CLI have been exercised end-to-end,
 and the real HTTP path has been verified against a mock OpenAI-compatible endpoint covering
 success, malformed output, a 401 and a retried 503.
@@ -750,9 +750,9 @@ provider.
 | `llm/LLMProvider.java` | Component interface |
 | `llm/OpenAiCompatibleProvider.java`, `llm/MockProvider.java` | Concrete components |
 | `llm/decorator/LLMProviderDecorator.java` | Abstract decorator |
-| `RetryingProvider` | Retries retryable failures with exponential backoff |
+| `RetryingProvider` | Retries retryable failures, honouring the provider's `retry-after` over its own backoff |
 | `CachingProvider` | LRU cache of identical requests |
-| `RateLimitingProvider` | Enforces a minimum gap between calls |
+| `RateLimitingProvider` | Keeps the session inside the provider's requests-per-minute **and** tokens-per-minute ceilings |
 | `LoggingProvider` | Accumulates tokens and latency into `UsageStats` |
 
 **Source files and methods.** `LLMProvider.complete(LLMRequest)` implemented by every layer;
@@ -767,6 +767,25 @@ site, and layers can be stacked in any order. The chain's name reports itself:
 sequence diagram SD01 and use case UC02: a timeout is retried automatically before the user
 sees anything. `LoggingProvider` is what makes section 5 of this report quote measured token
 counts rather than estimates. Recorded as change C9.
+
+**A case where the separation paid for itself.** The autonomous audit was dying partway
+through against a free API tier. The cause was that free tiers cap *tokens* per minute as
+well as requests — 8,000 on the tier used — and a single file analysis carries the code, the
+project conventions, the recalled decisions and the retrieved context, so three analyses
+exhaust the budget while making only three requests. Two layers needed to change and neither
+touched the other, nor the strategies, nor the agent:
+
+- `RateLimitingProvider` gained a rolling sixty-second token window. It estimates a request's
+  cost before sending, waits for room when the window is full, and then corrects the entry
+  with the figure the provider actually charged, so later decisions use real numbers.
+- `RetryingProvider` now prefers the provider's `retry-after` value over its own exponential
+  backoff. This was a genuine defect: a 429 asking for a sixty-second wait was being retried
+  after 0.8, 1.6 and 3.2 seconds, so all three attempts failed and the run ended. A rate limit
+  is the one failure where the server knows the right answer and the client does not.
+
+Had these concerns lived inside the transport class, both changes would have been edits to the
+same method that performs the HTTP call, and the offline provider would have needed the same
+logic duplicated.
 
 ## 3.10 Memento — undo state  *(added in Stage 2)*
 
@@ -1144,7 +1163,7 @@ git log --pretty=format:'%h  %ad  %s' --date=short »`
 | # | Check | Method | Result |
 |---|---|---|---|
 | 1 | Unit and integration tests | `mvn test` — JUnit 5 across `FileNodeTest`, `CommandHistoryTest`, `JsonTest`, `StandardsCheckerTest`, `ObserverAndReportTest`, `ExporterAndDiffTest`, `LlmLayerTest` | Pass |
-| 2 | Dependency-free verification | `./build.sh --check` — 110 assertions across all ten patterns plus a full end-to-end run | 110 passed, 0 failed |
+| 2 | Dependency-free verification | `./build.sh --check` — 118 assertions across all ten patterns, the rate-limiting behaviour, and a full end-to-end run | 118 passed, 0 failed |
 | 3 | Clean build from scratch | `rm -rf target && ./build.sh` on a clean checkout | Compiles with no warnings |
 | 4 | Real HTTP path | Ran the application against a local OpenAI-compatible mock endpoint covering success, fenced/prose-wrapped JSON, an out-of-range line number, a 401 and a retried 503 | All handled correctly; the API key appears only in the `Authorization` header |
 | 5 | GUI exercised end-to-end | Imported a repository, opened a file, ran an analysis, selected a finding, ran an autonomous audit, triaged, undid, exported | All panels update correctly; the window never blocks during a model call |
@@ -1166,6 +1185,10 @@ git log --pretty=format:'%h  %ad  %s' --date=short »`
 | **D6** | Exported reports contained absolute file paths, which is noise for a reader and leaks the directory layout of the machine the review ran on | Reading a generated PDF | `AbstractReportExporter` now relativises every path against the repository root | `exported paths are relative, not absolute` |
 | **D7** | Commas inside generic type arguments were counted as parameter separators, so `go(Map<String, List<Integer>> a, int b)` was reported as taking three parameters | Writing the test for the parameter-count rule | Parameter counting now tracks bracket depth | `generic type arguments do not inflate the parameter count` |
 | **D8** | The findings table and file tree were empty when the GUI was constructed after a repository had already been imported, because observers only receive events published after they register | Launching the GUI with `--repo` | The window now pulls the current state on construction instead of waiting for an event | Covered by check 5 |
+| **D9** | A 429 asking for a sixty-second wait was retried after 0.8s, 1.6s and 3.2s, so every attempt failed and the autonomous audit ended partway through | Running an audit against a free tier | `RetryingProvider` now honours the provider's `retry-after` value in preference to its own backoff | `a 429 is retried after the wait the provider asked for, not the default backoff` |
+| **D10** | The throttle counted requests but not tokens, so the session breached the free tier's 8,000-tokens-per-minute ceiling while well inside its request ceiling | Same audit run | `RateLimitingProvider` now tracks a rolling sixty-second token window and waits for room before sending | `exceeding the token ceiling makes the caller wait rather than fail` |
+| **D11** | `JFileChooser` in directories-only mode presents an empty list under macOS's Aqua look and feel, so no folder can be selected | Importing a repository on macOS | macOS uses the native directory picker; `--repo` and a typed-path menu item added as routes that need no dialog | Covered by check 5 |
+| **D12** | The default model shipped with the project had been retired by the provider, so every request returned 404 | First run against a real key | Default updated; the setup script now detects a retired model and switches to a current one | Covered by check 4 |
 
 ## 6.4 Remaining limitations
 
