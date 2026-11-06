@@ -1220,8 +1220,3 @@ For example, F03: Stage 1 feature F03 → section 2's F03 mapping →
 `SecurityStrategy.decoratePrompt`, `AbstractReviewStrategy.executeStrategy`,
 `ReviewReport.addItems` → Strategy, Template Method, Facade, Singleton, Observer → section 3.2
 and 3.8 → sequence diagram SD01 → the F03 row of section 7.
-
----
-
-*Generated for EECS3311 Course Project Stage 2. Findings produced by a language model are
-suggestions for a human reviewer, not a substitute for one.*
