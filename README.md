@@ -98,16 +98,19 @@ The default provider is **Groq**, which is free and does not require a credit ca
 Other supported providers: **OpenRouter** (free tier), **Ollama** (runs locally, no key at
 all), and **OpenAI** (paid). See `.env.example` for each one's settings.
 
-### Step 2 — create your local configuration
+### Step 2 — run the setup script
 
 ```bash
-cp .env.example .env
+./setup-key.sh          # Windows: setup-key.bat
 ```
 
-On Windows:
+It creates the configuration file, saves your key, confirms Git is ignoring it, and makes a
+real request so you know the key works. That is the whole of steps 2 and 3; skip to step 4.
 
-```cmd
-copy .env.example .env
+To do it by hand instead:
+
+```bash
+cp .env.example .env    # Windows: copy .env.example .env
 ```
 
 ### Step 3 — put your key in `.env`
@@ -340,6 +343,7 @@ ai-code-review-agent/
 ├── stage2-report.pdf         the Stage 2 Implementation Report
 ├── docs/stage2-report-FILL-IN.html   fill-in-the-blanks page; print to PDF from a browser
 ├── .env.example              safe configuration template (no real keys)
+├── setup-key.sh / .bat       creates .env, saves your key, verifies it works
 └── build.sh / run.sh / build.bat / run.bat
 ```
 

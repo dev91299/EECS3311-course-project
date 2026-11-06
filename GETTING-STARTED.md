@@ -20,6 +20,7 @@ A complete, working Stage 2 project:
 | `docs/diagrams/` | The UML diagrams (class, use-case, 4 sequence diagrams) |
 | `README.md` | The technical README your marker will read |
 | `.env.example` | A safe configuration template with **no real key** |
+| `setup-key.sh` / `setup-key.bat` | Sets up your API key and checks it works |
 | `build.sh` / `run.sh` | Mac and Linux: build and run |
 | `build.bat` / `run.bat` | Windows: build and run |
 
@@ -138,59 +139,166 @@ ask for a credit card.
 
 ## Step 5 — Put your key in the configuration file
 
-### 5a. Make your own copy of the template
+**There is a script that does all of this for you.** Use it — it avoids the hidden-file
+problem entirely, and it checks your key actually works before you go any further.
+
+### The easy way
+
+In your terminal, in the project folder, type:
 
 **Mac or Linux:**
 
 ```
+./setup-key.sh
+```
+
+**Windows:** type `setup-key.bat`, or just **double-click `setup-key.bat`** in File Explorer.
+
+It will:
+
+1. Create the configuration file for you.
+2. Ask you to paste your key.
+3. Save it.
+4. Check Git is ignoring it, so you can never commit it by accident.
+5. **Make a real request to the AI and show you the reply**, so you know it works.
+
+When it finishes you will see:
+
+```
+[OK] Git is ignoring .env, so your key can never be committed by accident.
+
+Checking that the key works...
+
+[OK] The key works. Here is the model's reply to a real request:
+
+     This class calculates line totals, applying a bulk discount and then tax...
+
+==============================================
+  Setup complete.
+```
+
+**That's Step 5 done.** Skip to Step 6.
+
+> **On Mac/Linux, nothing appears as you paste your key.** That is deliberate — the key is
+> hidden so it cannot be read off your screen or captured in a screen recording. Paste it and
+> press Enter even though the line looks empty.
+
+> **If you get `permission denied`:** type `chmod +x setup-key.sh` first, then try again.
+
+---
+
+### If the script tells you something is wrong
+
+| What it says | What it means |
+|---|---|
+| `[OK] The key works` | Done. Move on to Step 6. |
+| `[??] Could not reach the provider` | **Your key is fine — don't regenerate it.** This is a connection problem. Check you are online. School and work networks often block outside sites; try a home network or a phone hotspot. |
+| `[!!] The provider rejected the key` | The key is mistyped or was deleted. Make a new one at <https://console.groq.com> and run the script again. |
+| `[!!] still in OFFLINE MODE` | The file was saved but is not being read. Make sure you are running the script from inside the project folder. |
+| `[!!] the model name is wrong` | The free model was renamed. The message tells you what to add to the file. |
+
+---
+
+### The manual way (only if the script will not run)
+
+The file is called `.env` — with a dot at the start. **That dot makes it invisible in Finder
+and File Explorer by default, which is almost certainly why you could not find it.**
+
+**Step A — create it.** In the terminal, in the project folder:
+
+Mac or Linux:
+```
 cp .env.example .env
 ```
 
-**Windows:**
-
+Windows:
 ```
 copy .env.example .env
 ```
 
-### 5b. Put your key in it
+**Step B — confirm it exists.** The terminal can see hidden files even when your file manager
+cannot:
 
-Open the new `.env` file in any text editor (Notepad, TextEdit, VS Code — anything).
+Mac or Linux:
+```
+ls -a
+```
 
-> **Can't see the file?** Files starting with a dot are hidden.
-> On Mac press `Cmd + Shift + .` in Finder. On Windows, in File Explorer go to
-> **View → Show → Hidden items**.
+Windows:
+```
+dir /a
+```
 
-Find this line:
+You should see `.env` in the list. If it is there, the file exists — your file manager is
+just hiding it.
+
+**Step C — open it.** The simplest way is to tell your computer to open it, rather than
+hunting for it:
+
+Mac:
+```
+open -e .env
+```
+
+Linux:
+```
+xdg-open .env
+```
+
+Windows:
+```
+notepad .env
+```
+
+> **To make hidden files visible instead:** on Mac, press `Cmd + Shift + .` in Finder.
+> On Windows, in File Explorer go to **View → Show → Hidden items**.
+
+**Step D — edit it.** Find this line:
 
 ```
 LLM_API_KEY=YOUR_LOCAL_API_KEY_HERE
 ```
 
-Replace the placeholder with your real key, so it looks like:
+Replace the placeholder with your real key, so it reads:
 
 ```
 LLM_API_KEY=gsk_abc123yourrealkeyhere
 ```
 
-Save and close.
+No spaces around the `=`, no quotes around the key. Save and close.
 
-### 5c. Check the key is safe
+**Step E — check it works:**
 
-Type:
+```
+./run.sh --cli --repo samples/demo-project --command "summarize PriceCalculator.java"
+```
+
+(Windows: `run.bat --cli --repo samples\demo-project --command "summarize PriceCalculator.java"`)
+
+If you see a proper description of what the class does, it works. If you see
+`OFFLINE STRUCTURAL SUMMARY`, the key is not being read — go back to Step D and check the
+line carefully.
+
+---
+
+### Keeping your key safe
+
+Run this:
 
 ```
 git status
 ```
 
-`.env` must **not** appear anywhere in the output. If it does, stop and tell me — something is
-wrong with `.gitignore`.
+`.env` must **not** appear anywhere in the output. The setup script checks this for you
+automatically.
 
 > **Why this matters:** an API key is like a password. If you push it to a public GitHub
 > repository, anyone can use it, and the course explicitly penalises this. The project is set
 > up so `.env` can never be committed by accident.
 >
-> **If you ever do leak a key:** go straight to the Groq console and delete it, then make a new
-> one. Deleting the file afterwards is not enough, because the key stays in the Git history.
+> **If you ever do leak a key:** go to the Groq console and delete it immediately, then make
+> a new one. Deleting the file afterwards is not enough, because the key stays in the Git
+> history.
 
 ---
 
@@ -478,7 +586,8 @@ Go through this one line at a time before you submit.
 |---|---|
 | `java: command not found` | Java is not installed, or you did not reopen the terminal after installing. Go back to Step 1. |
 | `permission denied` running `./build.sh` | Type `chmod +x build.sh run.sh` then try again. |
-| Yellow `OFFLINE MODE` warning | The key is not being read. Check `.env` is in the project folder, spelled exactly `.env`, with `LLM_API_KEY=gsk_...` and no spaces around `=`. |
+| Yellow `OFFLINE MODE` warning | The key is not being read. Run `./setup-key.sh` (Windows: `setup-key.bat`) and it will diagnose it for you. |
+| Cannot find the `.env` file | It starts with a dot, so file managers hide it. Run `./setup-key.sh` instead — you never need to find the file. |
 | `The API key was rejected` | The key is wrong or was deleted. Make a new one at <https://console.groq.com>. |
 | `Rate limit reached` | You are going too fast for the free tier. Wait a minute and carry on. |
 | `The model name was not found` | The free model was renamed. Open the Groq console's model list, pick a current one, and put it in `.env` as `LLM_MODEL=...`. |
