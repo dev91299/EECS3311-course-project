@@ -46,6 +46,10 @@ Say this every time, so the marker can find and grade the feature:
 
 Start with the window closed. Run `./run.sh` (Windows: `run.bat`).
 
+> For F01 you want to show the import happening, so start with an empty window. For the
+> later videos you can save time with `./run.sh --repo samples/demo-project`, which opens
+> with the project already loaded.
+
 ---
 
 ### 00:00 — Introduction

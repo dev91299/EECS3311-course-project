@@ -97,6 +97,16 @@ public final class Main {
             }
             cli.start();
         } else {
+            // --repo also applies to the window, which saves a first-time user from the
+            // folder picker entirely. The GUI reads the already-loaded state when it is
+            // constructed, so the tree and findings table are populated on open.
+            if (repository != null) {
+                try {
+                    controller.handleImport(repository, false);
+                } catch (Exception e) {
+                    System.err.println("Could not open " + repository + ": " + e.getMessage());
+                }
+            }
             CodeReviewGUI.launch(controller);
         }
     }

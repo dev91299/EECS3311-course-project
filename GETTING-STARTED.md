@@ -306,18 +306,34 @@ automatically.
 
 ### Try the graphical version
 
-**Mac/Linux:** `./run.sh`   **Windows:** `run.bat`
+**Open the window with the sample project already loaded** — this is the easiest way, and it
+skips the folder picker entirely:
 
-A window opens. Try this:
+**Mac/Linux:**
+```
+./run.sh --repo samples/demo-project
+```
 
-1. **Repository → Open folder…** and choose the `samples/demo-project` folder inside the
-   project.
-2. In the tree on the left, click the arrows to expand down to `LoginService.java` and click it.
+**Windows:**
+```
+run.bat --repo samples\demo-project
+```
+
+A window opens with the project already in the tree on the left.
+
+> **Opening a folder from inside the window instead:** use **Repository → Open folder…**, and
+> remember the folder you want is `samples/demo-project` **inside** the project folder — not
+> the project folder itself. If the picker is awkward, use **Repository → Open folder by
+> path…** and paste the path, or drag the folder from Finder onto the box to fill it in.
+
+Now try this:
+
+1. In the tree on the left, click the arrows to expand down to `LoginService.java` and click it.
    The code appears in the middle.
-3. Press **Analyse** in the toolbar.
-4. Wait a few seconds. Findings appear in the table, coloured red for critical.
-5. Click a finding. The explanation appears on the right and the code jumps to that line.
-6. Press **Run autonomous audit**, accept the suggested goal, and press OK. Watch the **Agent
+2. Press **Analyse** in the toolbar.
+3. Wait a few seconds. Findings appear in the table, coloured red for critical.
+4. Click a finding. The explanation appears on the right and the code jumps to that line.
+5. Press **Run autonomous audit**, accept the suggested goal, and press OK. Watch the **Agent
    trace** tab on the right fill up with the agent's reasoning.
 
 Close the window when you are done.
@@ -592,6 +608,7 @@ Go through this one line at a time before you submit.
 | `Rate limit reached` | You are going too fast for the free tier. Wait a minute and carry on. |
 | `The model name was not found` | That model ID was retired. Run `./setup-key.sh` and it switches you to a current one, or pick one from <https://console.groq.com/docs/models> and set `LLM_MODEL=` in `.env`. |
 | Window does not open | Use the CLI instead: `./run.sh --cli`. |
+| Folder picker shows an empty list | Known macOS quirk. Start with `./run.sh --repo samples/demo-project`, or use **Repository → Open folder by path…** and paste the path. |
 | `git push` rejected | Try `git push -u origin main --force`. |
 | GitHub asks for a password | It wants a personal access token, not your password. See Step 7d. |
 

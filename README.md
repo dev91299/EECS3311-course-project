@@ -181,7 +181,8 @@ be started with `java -jar target/ai-code-review-agent.jar`.
 ## 5. Running the GUI
 
 ```bash
-./run.sh
+./run.sh                                # empty window
+./run.sh --repo samples/demo-project    # with a project already loaded
 ```
 
 Windows: `run.bat`  ·  With Maven: `java -jar target/ai-code-review-agent.jar`
@@ -202,7 +203,7 @@ The window has four regions:
 
 | To do this | Use |
 |---|---|
-| Open a project | **Repository → Open folder…** |
+| Open a project | **Repository → Open folder…**, or **Open folder by path…** to paste one |
 | Explain a file | Select it, then **Summarise** |
 | Find defects | Select it, pick a strategy, then **Analyse** |
 | Run every analysis | **Full review** |

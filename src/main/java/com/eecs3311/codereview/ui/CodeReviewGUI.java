@@ -51,10 +51,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -143,6 +145,7 @@ public class CodeReviewGUI extends JFrame implements Observer {
 
         JMenu repository = new JMenu("Repository");
         repository.add(menuItem("Open folder...", KeyEvent.VK_O, e -> actionImportFolder()));
+        repository.add(menuItem("Open folder by path...", 0, e -> actionImportByPath()));
         repository.add(menuItem("Clone from Git URL...", 0, e -> actionCloneRepository()));
         repository.addSeparator();
         repository.add(menuItem("Exit", 0, e -> dispose()));
@@ -480,13 +483,101 @@ public class CodeReviewGUI extends JFrame implements Observer {
     // ------------------------------------------------------------------ F01 actions
 
     private void actionImportFolder() {
-        JFileChooser chooser = new JFileChooser();
+        File chosen = chooseDirectory();
+        if (chosen == null) {
+            return;
+        }
+        importDirectory(chosen.getAbsolutePath());
+    }
+
+    /**
+     * Asks the user for a directory.
+     *
+     * <p>Swing's {@link JFileChooser} in {@code DIRECTORIES_ONLY} mode is unreliable under
+     * macOS's Aqua look and feel: it frequently presents an empty list, so there is nothing
+     * to select and the Choose button stays disabled. macOS therefore gets the native
+     * directory picker, which is what {@code apple.awt.fileDialogForDirectories} turns
+     * {@link FileDialog} into. Every other platform uses {@code JFileChooser}, where
+     * directory selection works correctly.</p>
+     *
+     * @return the chosen directory, or {@code null} when the user cancelled
+     */
+    private File chooseDirectory() {
+        File start = defaultBrowseDirectory();
+
+        if (isMacOs()) {
+            String previous = System.getProperty("apple.awt.fileDialogForDirectories");
+            System.setProperty("apple.awt.fileDialogForDirectories", "true");
+            try {
+                FileDialog dialog = new FileDialog(this, "Choose a project folder to review",
+                        FileDialog.LOAD);
+                if (start != null) {
+                    dialog.setDirectory(start.getAbsolutePath());
+                }
+                dialog.setVisible(true);
+                String directory = dialog.getDirectory();
+                String name = dialog.getFile();
+                if (name == null) {
+                    return null;
+                }
+                return new File(directory, name);
+            } finally {
+                if (previous == null) {
+                    System.clearProperty("apple.awt.fileDialogForDirectories");
+                } else {
+                    System.setProperty("apple.awt.fileDialogForDirectories", previous);
+                }
+            }
+        }
+
+        JFileChooser chooser = new JFileChooser(start);
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.setDialogTitle("Choose a project folder to review");
         if (chooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
+            return null;
+        }
+        return chooser.getSelectedFile();
+    }
+
+    /**
+     * Where the folder picker should open.
+     *
+     * <p>The bundled sample project is the thing a first-time user wants, so the picker
+     * starts beside the application rather than in the home directory.</p>
+     */
+    private File defaultBrowseDirectory() {
+        File samples = new File("samples");
+        if (samples.isDirectory()) {
+            return samples;
+        }
+        File working = new File(System.getProperty("user.dir", "."));
+        return working.isDirectory() ? working : null;
+    }
+
+    private static boolean isMacOs() {
+        return System.getProperty("os.name", "").toLowerCase().contains("mac");
+    }
+
+    /** Lets the user type or paste a path, for when a file dialog is unhelpful. */
+    private void actionImportByPath() {
+        String suggestion = new File("samples/demo-project").isDirectory()
+                ? new File("samples/demo-project").getAbsolutePath()
+                : System.getProperty("user.dir", "");
+
+        String path = (String) JOptionPane.showInputDialog(this,
+                "Full path of the project folder to review:\n\n"
+                + "(You can drag a folder from Finder or File Explorer onto this box\n"
+                + "to fill in its path.)",
+                "Open folder by path  [F01]", JOptionPane.PLAIN_MESSAGE, null, null, suggestion);
+
+        if (path == null || path.isBlank()) {
             return;
         }
-        String path = chooser.getSelectedFile().getAbsolutePath();
+        importDirectory(path.trim().replace("\\ ", " "));
+    }
+
+    /** Shared import path used by both ways of choosing a folder. */
+    private void importDirectory(String path) {
         runInBackground("Importing repository...", () -> {
             controller.handleImport(path, false);
             return null;
