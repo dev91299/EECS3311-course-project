@@ -207,7 +207,7 @@ public class CLIView implements Observer {
             case "clear":    commandClear();                         break;
             case "exit":     case "quit": running = false;           break;
             default:
-                println("Unknown command '" + command + "'. Type help for the command list.");
+                printUnknownCommand(command, line);
         }
     }
 
@@ -786,6 +786,66 @@ public class CLIView implements Observer {
         controller.getReport().clear();
         controller.getAgent().clearConversation();
         println("Findings and conversation cleared. Agent memory and history are unaffected.");
+    }
+
+    /** Shell commands people reach for out of habit while inside this prompt. */
+    private static final java.util.Set<String> SHELL_COMMANDS = java.util.Set.of(
+            "cd", "ls", "dir", "pwd", "cat", "clear", "mkdir", "rm", "cp", "mv", "echo",
+            "git", "java", "javac", "mvn", "python", "python3", "code", "open", "nano",
+            "vim", "sudo", "brew", "npm", "chmod", "curl", "wget", "man", "which", "touch");
+
+    /**
+     * Explains an unrecognised command.
+     *
+     * <p>This prompt looks like a shell but is not one, and the most common confusion is a
+     * user typing a terminal command here - or, worse, trying to launch the application
+     * again from inside itself. Saying only "unknown command" leaves them stuck, so a shell
+     * command gets a specific explanation of which prompt they are at and how to leave it.</p>
+     */
+    private void printUnknownCommand(String command, String line) {
+        boolean looksLikeShell = SHELL_COMMANDS.contains(command)
+                || line.startsWith("./")
+                || line.startsWith("/")
+                || line.startsWith("~");
+
+        if (!looksLikeShell) {
+            println("Unknown command '" + command + "'. Type help for the command list.");
+            return;
+        }
+
+        println("");
+        println(Ansi.YELLOW + "  '" + command + "' is a terminal command, and you are "
+                + "currently inside this application." + Ansi.RESET);
+        println("");
+        println("  There are two different prompts, and they accept different things:");
+        println("");
+        println("    " + Ansi.BOLD + "codereview(...)>" + Ansi.RESET
+                + "   <- you are here; it takes the commands in 'help'");
+        println("    " + Ansi.BOLD + "yourname@Mac %" + Ansi.RESET
+                + "     <- your terminal; it takes cd, ls, ./run.sh and so on");
+        println("");
+        println("  To get back to your terminal, type " + Ansi.BOLD + "exit" + Ansi.RESET + ".");
+
+        if (line.contains("run.sh") || line.contains("run.bat")) {
+            println("");
+            println("  (The application is already running - that is this prompt. You do not "
+                    + "need to start it again.)");
+        }
+        if ("cd".equals(command)) {
+            println("");
+            println("  To review a different folder without leaving, use: "
+                    + Ansi.BOLD + "open <path>" + Ansi.RESET);
+        }
+        if ("ls".equals(command) || "dir".equals(command)) {
+            println("");
+            println("  To list this repository's files, use: " + Ansi.BOLD + "files" + Ansi.RESET
+                    + "  (or " + Ansi.BOLD + "tree" + Ansi.RESET + ")");
+        }
+        if ("cat".equals(command)) {
+            println("");
+            println("  'cat' does work here, but it takes a file inside the repository, "
+                    + "for example: " + Ansi.BOLD + "cat LoginService.java" + Ansi.RESET);
+        }
     }
 
     // ------------------------------------------------------------------ help

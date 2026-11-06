@@ -338,6 +338,21 @@ Now try this:
 
 Close the window when you are done.
 
+### Two different prompts — worth knowing before you start
+
+Once the app is running, your terminal window shows **the app's prompt**, not your Mac's.
+They accept different commands:
+
+| Prompt | What it is | What it takes |
+|---|---|---|
+| `yourname@Mac ~ %` | Your terminal | `cd`, `ls`, `./run.sh`, `git push` |
+| `codereview(...)>` | Inside the app | `analyze`, `issues`, `export`, `help` |
+
+To leave the app and get back to your terminal, type **`exit`**.
+
+If you type a terminal command by mistake, the app now tells you which prompt you are at
+rather than just refusing.
+
 ### Try the command-line version
 
 **Mac/Linux:** `./run.sh --cli --repo samples/demo-project`
@@ -609,6 +624,7 @@ Go through this one line at a time before you submit.
 | `The model name was not found` | That model ID was retired. Run `./setup-key.sh` and it switches you to a current one, or pick one from <https://console.groq.com/docs/models> and set `LLM_MODEL=` in `.env`. |
 | Window does not open | Use the CLI instead: `./run.sh --cli`. |
 | Folder picker shows an empty list | Known macOS quirk. Start with `./run.sh --repo samples/demo-project`, or use **Repository → Open folder by path…** and paste the path. |
+| `Unknown command 'cd'` / `'ls'` / `'./run.sh'` | You are at the app's prompt, not your terminal's. Type `exit` first. The app explains this when it happens. |
 | `git push` rejected | Try `git push -u origin main --force`. |
 | GitHub asks for a password | It wants a personal access token, not your password. See Step 7d. |
 
