@@ -66,6 +66,8 @@ public final class SelfCheck {
         System.out.println();
         System.out.println("AI Code Review Agent - self check (no external dependencies)");
         System.out.println("============================================================");
+        System.out.println("Runs against the built-in offline analyser, so the result is the");
+        System.out.println("same every time and uses none of your API quota.");
 
         section("Composite pattern - FileNode");
         checkComposite();
@@ -563,6 +565,14 @@ public final class SelfCheck {
         Path memory = Path.of(repository, ".agent-memory", "memory.json");
         Files.deleteIfExists(memory);
 
+        // Deliberately run against the built-in offline analyser rather than whatever
+        // provider happens to be configured. A verification harness has to be
+        // reproducible: if it called a live API it would fail whenever that service was
+        // rate limiting, offline or simply slow, which says nothing about this code. It
+        // would also spend the user's quota every time they checked their build.
+        System.setProperty("LLM_PROVIDER", "mock");
+        com.eecs3311.codereview.llm.LLMClient.getInstance().reloadConfiguration();
+
         AgentController controller = new AgentController();
         FileNode root = controller.handleImport(repository, false);
         check("the repository imports", root.getTotalFiles() > 0);
@@ -579,6 +589,19 @@ public final class SelfCheck {
         check("findings reach the report", controller.getReport().getTotalIssues() > 0);
         check("at least one critical finding is detected",
                 findings.stream().anyMatch(f -> f.getSeverity() == Severity.CRITICAL));
+
+        if (findings.isEmpty()) {
+            // Report the remaining checks as failed rather than throwing: a stack trace
+            // tells the reader nothing about which behaviours are broken.
+            check("triage, memory, undo, snapshot, export and audit could be checked",
+                    false);
+            System.out.println();
+            System.out.println("   The analysis returned nothing, so the checks that depend");
+            System.out.println("   on a finding were skipped. Run this to see the reason:");
+            System.out.println("     ./run.sh --cli --repo " + repository
+                    + " --command \"analyze LoginService.java security\"");
+            return;
+        }
 
         ReviewItem first = findings.get(0);
         controller.rejectFinding(first.getIssueId(), "not applicable on this project");
