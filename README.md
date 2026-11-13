@@ -2,11 +2,6 @@
 
 **EECS3311 Course Project — Stage 2 implementation**
 
-> **New to this project, or new to programming?** Start with
-> **[GETTING-STARTED.md](GETTING-STARTED.md)** — a step-by-step setup guide that assumes no
-> prior experience. For recording the demonstration videos, see
-> **[docs/VIDEO-SCRIPT.md](docs/VIDEO-SCRIPT.md)**.
-
 An AI agent that reviews source code. It imports a repository, plans its own multi-step
 audit, chooses which files to read, analyses them with interchangeable review strategies,
 explains what it found, proposes fixes and tests, and remembers which findings your team
