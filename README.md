@@ -225,6 +225,43 @@ Selecting text in the source viewer restricts the next analysis to that selectio
 The last form runs one command, prints the result and exits, so the tool can be scripted in a
 build pipeline.
 
+### Feeding the CLI from a file or from standard input
+
+The interactive loop reads one command per line from standard input and stops cleanly at
+end-of-file, so the same commands you would type by hand can also be supplied by a script.
+No separate batch mode is required.
+
+Put the commands in a plain text file, one per line:
+
+```text
+# commands.txt
+open samples/demo-project
+analyze LoginService.java security
+search password validation
+export review.html
+exit
+```
+
+Then run it either way:
+
+```bash
+./run.sh --cli < commands.txt                 # redirect a file into the CLI
+cat commands.txt | ./run.sh --cli             # or pipe it
+
+echo "analyze LoginService.java security" | ./run.sh --cli --repo samples/demo-project
+```
+
+For a single command, `--command` skips the loop entirely and sets the process exit code
+(`0` on success, `1` on failure), which is what a build pipeline checks:
+
+```bash
+./run.sh --cli --repo samples/demo-project --command "analyze LoginService.java security"
+echo $?
+```
+
+All four routes reach the same `AgentController`, so a command typed by hand, read from a
+file, piped in, or passed as an argument performs exactly the same work.
+
 Type `help` for the full command list. The main ones:
 
 ```
